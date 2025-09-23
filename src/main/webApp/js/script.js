@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const errorMessageDiv = document.getElementById('errorMessage');
 
         // 4. Enviar los datos al backend usando fetch
-        fetch('http://localhost:8080/tu-proyecto/login', { // <-- ¡URL CLAVE! Apunta a tu Controlador Java
+        fetch('http://localhost:8080/main.html', { // <-- ¡URL CLAVE! Apunta a tu Controlador Java
             method: 'POST', // Usamos POST para enviar datos sensibles
             headers: {
                 'Content-Type': 'application/json' // Le decimos al backend que enviaremos JSON

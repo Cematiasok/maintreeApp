@@ -8,6 +8,7 @@
     <artifactId>maintreeApp</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+
     <properties>
         <maven.compiler.source>22</maven.compiler.source>
         <maven.compiler.target>22</maven.compiler.target>
@@ -27,6 +28,20 @@
             <version>2.10.1</version>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version> <!-- Or the latest available version -->
+                <configuration>
+                    <port>8080</port>
+                    <path>/mywebapp</path>
+                    <!-- Other configurations like manager credentials, etc. -->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 
 </project>
