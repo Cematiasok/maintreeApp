@@ -22,15 +22,16 @@
         <div form class="form-imformation"> 
             <div class="form-imformation-childs">    
                 <h3>Log in</h3>
-                <form>
-                    <label for="email">Email or Username:</label>
-                    <input type="email" id="email" name="email" placeholder="">
+                <form id="LoginForm">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Email">
 
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password">
 
                     <button type="submit">Log In</button>
                 </form>
+                <div id="errorMessage" style="color: red;"></div>
 
             </div>
         </div>   
