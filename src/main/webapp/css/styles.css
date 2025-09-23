@@ -1,0 +1,55 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Zen Kaku Gothic Antique', sans-serif;
+   /* background-color: #f0f0f0;*/
+  
+
+}
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw
+
+}
+.container-form {
+    display: flex;
+    border-radius: 20px;
+    box-shadow: 0 5px 7px rgba(0, 0, 0, 0.1);
+    height: 500px;
+    max-width: 1200px;
+    transition: all 1s ease;
+    margin: 10px;
+    border: solid thin red;
+
+
+}
+
+.information {
+    background-image: url(img/Fondo_casco.png);
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    padding: 20px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+}
+.Imfo-childs{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content:end;
+    align-items: flex-start;
+    text-align: right;
+   color: white;
+}
+.Imfo-childs h3{
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
