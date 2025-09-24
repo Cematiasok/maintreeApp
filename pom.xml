@@ -7,6 +7,8 @@
     <groupId>org.example</groupId>
     <artifactId>maintreeApp</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+
 
 
     <properties>
