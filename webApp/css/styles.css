@@ -1,0 +1,129 @@
+body{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+  width:100vw;
+  background-color:#fff;
+  font-family:'Zen Kaku Gothic Antique', sans-serif;
+}
+
+.container-form{
+  display:flex;
+  height:100vh;
+  width:100%;
+  margin:0;
+}
+
+/* Panel izquierdo con la imagen */
+.information{
+  background-image:url("../img/Fondo_casco.png");
+  background-size:cover;
+  background-position:center;
+  width:60%;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding:30px;
+  color:#fff;
+}
+
+.info-childs .marca{
+  font-size:1.2rem;
+  font-weight:bold;
+  margin-bottom:5px;
+}
+
+/* Panel derecho */
+.form-section{
+  width:40%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  padding:50px;
+  background:#fff;
+}
+
+/* Logo arriba y centrado */
+.logo-container{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin-bottom:30px;
+}
+
+.logo-container img{
+  width:160px;
+  height:auto;
+  display:block;
+}
+
+/* Formulario */
+.form-login{
+  width:100%;
+  max-width:350px;
+  display:flex;
+  flex-direction:column;
+}
+
+.form-login label{
+  font-size:0.9rem;
+  margin-top:15px;
+  margin-bottom:5px;
+}
+
+.form-login input{
+  padding:10px;
+  border:1px solid #ccc;
+  border-radius:5px;
+}
+
+.forgot{
+  font-size:0.8rem;
+  margin-top:8px;
+  color:#3a5f4d;
+  text-decoration:none;
+  align-self:flex-end;
+}
+
+.remember{
+  display:flex;
+  align-items:center;
+  margin:15px 0;
+  font-size:0.85rem;
+}
+
+.btn-login{
+  background-color:#3a5f4d;
+  color:#fff;
+  border:none;
+  padding:12px;
+  border-radius:5px;
+  cursor:pointer;
+  margin-top:10px;
+  font-size:1rem;
+  font-weight:bold;
+}
+
+.btn-login:hover{
+  background-color:#2e4a3c;
+}
+
+.signup{
+  font-size:0.85rem;
+  margin-top:15px;
+}
+
+.signup a{
+  color:#3a5f4d;
+  font-weight:bold;
+  text-decoration:none;
+}
+
+/* Responsive */
+@media (max-width: 900px){
+  .information{ display:none; }
+  .form-section{ width:100%; padding:30px; }
+}

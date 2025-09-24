@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+Antique&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <title>Maintree - Iniciar sesión</title>
+</head>
+<body>
+  <div class="container-form">
+    <!-- Panel Izquierdo -->
+    <div class="information">
+      <div class="info-childs">
+        <p class="marca">MAINTREE</p>
+      </div>
+    </div>
+
+    <!-- Panel Derecho -->
+    <div class="form-section">
+      <div class="logo-container">
+        <img src="img/logo_Maintree.png" alt="Logo Maintree">
+      </div>
+
+      <form id="loginForm" class="form-login">
+        <label for="email">Usuario o Email</label>
+        <input type="text" id="email" name="email" placeholder="usuario123">
+
+        <label for="password">Contraseña</label>
+        <div class="password-wrapper">
+          <input type="password" id="password" name="password" placeholder="**********">
+        </div>
+
+        <a href="#" class="forgot">¿Olvidaste tu contraseña?</a>
+
+        <div class="remember">
+          <input type="checkbox" id="remember" name="remember" checked>
+          <label for="remember">Recuérdame</label>
+        </div>
+
+        <button type="submit" class="btn-login">INICIAR SESIÓN</button>
+        <p class="signup">¿No tienes cuenta? <a href="#">REGÍSTRATE</a></p>
+      </form>
+
+      <div id="errorMessage" class="error"></div>
+    </div>
+  </div>
+
+  <script>
+    // Validación simple y mensaje en rojo
+    document.getElementById("loginForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      const user = document.getElementById("email").value.trim();
+      const pass = document.getElementById("password").value.trim();
+      const msg  = document.getElementById("errorMessage");
+
+      // Demo de credenciales válidas
+      const userOk = "";
+      const passOk = "";
+
+      if (user === userOk && pass === passOk) {
+        msg.textContent = "";
+        alert("Inicio de sesión exitoso ✅");
+      } else {
+        msg.textContent = "credenciales inválidas";
+        msg.style.color = "red";
+        msg.style.textAlign = "center";
+        msg.style.marginTop = "10px";
+      }
+    });
+
+    // Redirección a recuperación
+    document.querySelector(".forgot").addEventListener("click", function(e){
+      e.preventDefault();
+      window.location.href = "recuperar.html";
+    });
+  </script>
+</body>
+</html>
+
