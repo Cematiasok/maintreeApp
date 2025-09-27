@@ -17,25 +17,39 @@
                 <p>Gestion inteligente de mantenimiento indistrial.</p>
             </div>
         </div>
-        
-    
-        <div form class="form-imformation"> 
-            <div class="form-imformation-childs">    
-                <h3>Log in</h3>
-                <form id="loginForm">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Email">
+
+
+        <div form class="form-imformation">
+            <div class="logo-container">
+                <img src="css/img/logo_Maintree.png" alt="Logo Maintree">
+            </div>
+
+<!--            <div class="form-imformation-childs">-->
+<!--                <h3>Log in</h3>-->
+                <form id="loginForm" class="form-login">
+                    <label for="email">Usuario o Email</label>
+                    <input type="email" id="email" name="email" placeholder="usuario123">
 
                     <label for="password">Password:</label>
-                    <input type="password" id="password" name="password">
+                    <input type="password" id="password" name="password" placeholder="**********">
 
-                    <button type="submit">Log In</button>
+                    <a href="#" class="forgot">¿Olvidaste tu contraseña?</a>
+
+                    <div class="remember">
+                        <input type="checkbox" id="remember" name="remember" checked>
+                        <label for="remember">Recuérdame</label>
+                    </div>
+
+                    <button type="submit" class="btn-login">INICIAR SESIÓN</button>                    <p class="signup">¿No tienes cuenta? <a href="#">REGÍSTRATE</a></p>
+
                 </form>
-                <div id="errorMessage" style="color: red;"></div>
 
-            </div>
-        </div>   
-   
+                <div id="errorMessage" class="error"></div>
+<!--                <div id="errorMessage" style="color: red;"></div>-->
+
+<!--            </div>-->
+        </div>
+
     </div>
     <script src="js/script.js"></script>
 </body>
