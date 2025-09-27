@@ -45,4 +45,10 @@ document.addEventListener('DOMContentLoaded', function() {
             errorMessageDiv.textContent = 'Ocurrió un error al conectar con el servidor.';
         });
     });
+    // Redirección a recuperación de contraseña
+//document.querySelector(".forgot").addEventListener("click", function(e) {
+//    e.preventDefault();
+//    window.location.href = "recuperar.html"; // Nueva página de recuperación
+//});
+
 });
