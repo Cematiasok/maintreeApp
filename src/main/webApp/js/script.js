@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const errorMessageDiv = document.getElementById('errorMessage');
 
         // 4. Enviar los datos al backend usando fetch
-        fetch('http://localhost:8080/main.html', { // <-- ¡URL CLAVE! Apunta a tu Controlador Java
+        fetch('/mywebapp/login', { // <-- ¡URL CLAVE! Apunta a tu Controlador Java
             method: 'POST', // Usamos POST para enviar datos sensibles
             headers: {
                 'Content-Type': 'application/json' // Le decimos al backend que enviaremos JSON
@@ -30,8 +30,11 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             // 5. Procesar la respuesta del backend
             if (data.success) {
-                // Si el login es exitoso, redirigimos a otra página
-                window.location.href = 'dashboard.html';
+                // Si el login es exitoso, ocultamos el form y mostramos un mensaje
+                document.getElementById('loginForm').style.display = 'none';
+                const messageDiv = document.getElementById('errorMessage');
+                messageDiv.textContent = '¡Sesión iniciada con éxito!';
+                messageDiv.style.color = 'green';
             } else {
                 // Si falla, mostramos el mensaje de error que nos envió el backend
                 errorMessageDiv.textContent = data.message;
@@ -42,4 +45,10 @@ document.addEventListener('DOMContentLoaded', function() {
             errorMessageDiv.textContent = 'Ocurrió un error al conectar con el servidor.';
         });
     });
+    // Redirección a recuperación de contraseña
+//document.querySelector(".forgot").addEventListener("click", function(e) {
+//    e.preventDefault();
+//    window.location.href = "recuperar.html"; // Nueva página de recuperación
+//});
+
 });
