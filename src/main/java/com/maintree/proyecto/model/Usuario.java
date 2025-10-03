@@ -1,4 +1,4 @@
-package com.tuempresa.proyecto.model;
+package com.maintree.proyecto.model;
 
 public class Usuario {
     private String email;
