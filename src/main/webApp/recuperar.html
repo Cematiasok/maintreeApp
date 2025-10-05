@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="css/styles.css">
   <title>Recuperar contraseña</title>
+  <style>
+      .info-message { color: green; text-align: center; margin-bottom: 15px; }
+      .error-message { color: red; text-align: center; margin-bottom: 15px; }
+  </style>
 </head>
 <body>
   <div class="container-form">
@@ -21,14 +25,14 @@
           <img src="css/img/logo_Maintree.png" alt="Logo Maintree">
       </div>
 
-      <form id="recoverForm" class="form-login">
-        <p id="mensajeRecuperacion"
-           style="color:green; text-align:center; margin-bottom:15px; display:none;">
-          Se ha enviado un enlace de recuperación a su correo
-        </p>
+      <!-- El action apunta al servlet y el método es POST -->
+      <form id="recoverForm" class="form-login" action="forgot-password" method="POST">
+        
+        <div id="message-container"></div>
 
         <label for="recoverEmail">Usuario o Email</label>
-        <input type="text" id="recoverEmail" name="recoverEmail" placeholder="usuario123">
+        <!-- El name debe ser "email" para que el servlet lo reciba -->
+        <input type="text" id="recoverEmail" name="email" placeholder="usuario123" required>
 
         <button type="submit" class="btn-login">ENVIAR ENLACE</button>
       </form>
@@ -36,13 +40,17 @@
   </div>
 
   <script>
-    document.getElementById("recoverForm").addEventListener("submit", function(e){
-      e.preventDefault();
-      const msg = document.getElementById("mensajeRecuperacion");
-      msg.style.display = "block";
+    document.addEventListener('DOMContentLoaded', function() {
+      const params = new URLSearchParams(window.location.search);
+      const status = params.get('status');
+      const messageContainer = document.getElementById('message-container');
+
+      if (status === 'sent') {
+        messageContainer.innerHTML = '<p class="info-message">Si el correo está registrado, se ha enviado un enlace de recuperación.</p>';
+      } else if (status === 'error') {
+        messageContainer.innerHTML = '<p class="error-message">Hubo un error al procesar la solicitud. Inténtalo de nuevo más tarde.</p>';
+      }
     });
   </script>
 </body>
 </html>
-
-
