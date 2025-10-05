@@ -4,16 +4,11 @@ import org.mindrot.jbcrypt.BCrypt;
 
 public class PasswordHasher {
 
-    public static void main(String[] args) {
-        // Escribe aquí la contraseña que quieres hashear
-        String passwordToHash = "12345"; // Cambia "12345" por la contraseña que necesites
+    public static String hashPassword(String plainTextPassword) {
+        return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
+    }
 
-        // Generar el hash
-        String hashedPassword = BCrypt.hashpw(passwordToHash, BCrypt.gensalt());
-
-        // Imprimir el hash para que puedas copiarlo
-        System.out.println("Contraseña en texto plano: " + passwordToHash);
-        System.out.println("Hash generado (cópialo y pégalo en la base de datos):");
-        System.out.println(hashedPassword);
+    public static boolean checkPassword(String plainTextPassword, String hashedPassword) {
+        return BCrypt.checkpw(plainTextPassword, hashedPassword);
     }
 }
