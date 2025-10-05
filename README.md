@@ -46,6 +46,10 @@ Sigue estos pasos para tener una copia del proyecto funcionando en tu máquina l
     ```
 5.  Abre tu navegador y ve a `http://localhost:8080/mywebapp/main.html`
 
+6. **(Opcional) Configuración de Correo Electrónico para Recuperación de Contraseña:**
+
+    Ejecuta desde la terminal el servidor de mialhog.exe y manten abierto para capturar los correos de recuperación. Luego abre en tu navegador la siguiente dirección: `http://localhost:8025/`
+
 ## 🤝 Contribuciones
 
 Las contribuciones son bienvenidas. Si quieres mejorar el proyecto, por favor, haz un fork del repositorio y crea una pull request.
