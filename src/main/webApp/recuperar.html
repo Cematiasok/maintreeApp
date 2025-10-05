@@ -25,13 +25,11 @@
           <img src="css/img/logo_Maintree.png" alt="Logo Maintree">
       </div>
 
-      <!-- El action apunta al servlet y el método es POST -->
-      <form id="recoverForm" class="form-login" action="forgot-password" method="POST">
+      <form id="recoverForm" class="form-login">
         
         <div id="message-container"></div>
 
         <label for="recoverEmail">Usuario o Email</label>
-        <!-- El name debe ser "email" para que el servlet lo reciba -->
         <input type="text" id="recoverEmail" name="email" placeholder="usuario123" required>
 
         <button type="submit" class="btn-login">ENVIAR ENLACE</button>
@@ -39,18 +37,6 @@
     </div>
   </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const params = new URLSearchParams(window.location.search);
-      const status = params.get('status');
-      const messageContainer = document.getElementById('message-container');
-
-      if (status === 'sent') {
-        messageContainer.innerHTML = '<p class="info-message">Si el correo está registrado, se ha enviado un enlace de recuperación.</p>';
-      } else if (status === 'error') {
-        messageContainer.innerHTML = '<p class="error-message">Hubo un error al procesar la solicitud. Inténtalo de nuevo más tarde.</p>';
-      }
-    });
-  </script>
+  <script src="js/script.js"></script>
 </body>
 </html>

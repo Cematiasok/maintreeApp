@@ -73,13 +73,15 @@ public class PasswordRecoveryService {
     private void sendRecoveryEmail(Usuario usuario, String requestUrl) {
         // --- ¡CONFIGURACIÓN REQUERIDA! ---
         // Sustituye con los datos de tu servidor de correo (SMTP)
-        final String username = ""; // Tu email de envío
+        final String username = "noreply@maintree.app"; // Tu email de envío
         final String password = "";   // O una contraseña de aplicación si usas Gmail/Outlook
         final String host = "localhost";      // Servidor SMTP
         final String port = "1025";                   // Puerto SMTP (587 para TLS, 465 para SSL)
 
         Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
+        // Para desarrollo local con MailHog, la autenticación se establece en 'false'.
+        // Para un servidor SMTP real (producción), cambia esto a 'true' y proporciona un 'username' y 'password'.
+        props.put("mail.smtp.auth", "false");
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", host);
         props.put("mail.smtp.port", port);
