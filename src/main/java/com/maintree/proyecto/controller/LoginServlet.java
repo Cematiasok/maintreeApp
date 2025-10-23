@@ -12,6 +12,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.HashMap;
 
 // Esta anotación mapea esta clase a la URL "/login"
 @WebServlet("/login")
@@ -36,18 +38,20 @@ public class LoginServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
 
         PrintWriter out = resp.getWriter();
-        String jsonResponse;
+        Map<String, Object> responseMap = new HashMap<>();
 
         if (esValido) {
             // Si es válido, creamos un JSON de éxito
-            jsonResponse = "{\"success\": true, \"message\": \"Inicio de sesión correcto\"}";
+            responseMap.put("success", true);
+            responseMap.put("message", "Inicio de sesión correcto");
         } else {
             // Si no es válido, creamos un JSON de error
-            jsonResponse = "{\"success\": false, \"message\": \"Correo o contraseña incorrectos\"}";
+            responseMap.put("success", false);
+            responseMap.put("message", "Correo o contraseña incorrectos");
         }
 
         // 5. Enviar la respuesta
-        out.print(jsonResponse);
+        out.print(gson.toJson(responseMap));
         out.flush();
     }
 }

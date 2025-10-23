@@ -1,20 +1,121 @@
 package com.maintree.proyecto.model;
 
 import java.util.Date;
+import java.util.Set;
+import java.util.HashSet;
 
+/**
+ * Clase Modelo (POJO) que representa la tabla 'usuarios' de la base de datos.
+ *
+ * CORREGIDO:
+ * - Se usa 'int id' para coincidir con 'int(11)'.
+ * - Se añade 'nombre', 'apellido', 'direccion', 'isActive'.
+ * - Se usa 'Date' de java.util.Date para 'reset_token_expiry'.
+ * - Se añade el 'Set<Rol> roles' para la relación.
+ */
 public class Usuario {
-    private String email;
-    private String password;
-    private String resetToken;
-    private Date resetTokenExpiry;
 
-    // Getters y Setters
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-    public String getResetToken() { return resetToken; }
-    public void setResetToken(String resetToken) { this.resetToken = resetToken; }
-    public Date getResetTokenExpiry() { return resetTokenExpiry; }
-    public void setResetTokenExpiry(Date resetTokenExpiry) { this.resetTokenExpiry = resetTokenExpiry; }
+    // --- Campos de la tabla 'usuarios' ---
+    private int id;
+    private String nombre;
+    private String apellido;
+    private String email;
+    private String direccion;
+    private String password;
+    private boolean isActive; // tinyint(1) se mapea a boolean
+    private String resetToken;
+    private Date resetTokenExpiry; // datetime se mapea a java.util.Date
+
+    // --- Relación con Roles ---
+    // Esto no es una columna en 'usuarios', sino que se carga
+    // desde la tabla 'usuariorol'.
+    private Set<Rol> roles;
+
+    // Constructor (opcional, pero buena práctica)
+    public Usuario() {
+        this.roles = new HashSet<>(); // Inicializar el Set para evitar NullPointerException
+        this.isActive = true; // Valor por defecto
+    }
+
+    // --- Getters y Setters ---
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public Date getResetTokenExpiry() {
+        return resetTokenExpiry;
+    }
+
+    public void setResetTokenExpiry(Date resetTokenExpiry) {
+        this.resetTokenExpiry = resetTokenExpiry;
+    }
+
+    public Set<Rol> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Rol> roles) {
+        this.roles = roles;
+    }
 }
