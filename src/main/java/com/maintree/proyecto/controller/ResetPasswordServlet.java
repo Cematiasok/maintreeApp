@@ -1,5 +1,6 @@
 package com.maintree.proyecto.controller;
 
+import com.maintree.proyecto.dao.UsuarioDAO;
 import com.maintree.proyecto.service.PasswordRecoveryService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,7 +15,18 @@ import java.nio.charset.StandardCharsets;
 @WebServlet("/reset-password")
 public class ResetPasswordServlet extends HttpServlet {
 
-    private PasswordRecoveryService recoveryService = new PasswordRecoveryService();
+    private final PasswordRecoveryService recoveryService;
+
+    // Constructor por defecto para el servidor de servlets.
+    // Aquí se crean las dependencias.
+    public ResetPasswordServlet() {
+        this.recoveryService = new PasswordRecoveryService(new UsuarioDAO());
+    }
+
+    // Constructor para pruebas (inyección de mocks).
+    public ResetPasswordServlet(PasswordRecoveryService recoveryService) {
+        this.recoveryService = recoveryService;
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

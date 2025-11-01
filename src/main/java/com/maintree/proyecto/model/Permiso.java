@@ -3,6 +3,8 @@ package com.maintree.proyecto.model;
 public class Permiso {
 
     private int id;
+    // NOTA: Los nombres de permisos deberían ser constantes en mayúsculas y guiones bajos
+    // para seguir convenciones (ej. MANAGE_USERS, READ_REPORTS).
     private String nombre; // Ej: "MANAGE_USERS", "READ_REPORTS", "POST_COMMENTS"
     private String descripcion;
 
@@ -13,4 +15,20 @@ public class Permiso {
     public void setNombre(String nombre) { this.nombre = nombre; }
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Permiso permiso = (Permiso) o;
+        // Si el id es 0, el objeto no ha sido persistido, por lo que no puede ser igual a otro.
+        return id != 0 && id == permiso.id;
+    }
+
+    @Override
+    public int hashCode() {
+        // Usamos una implementación simple basada en el ID.
+        // Los IDEs pueden generar una más compleja si hay más campos inmutables.
+        return Integer.hashCode(id);
+    }
 }

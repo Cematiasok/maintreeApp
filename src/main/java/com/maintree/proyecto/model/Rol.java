@@ -27,4 +27,17 @@ public class Rol {
     }
 
     public void setPermisos(Set<Permiso> permisos) { this.permisos = permisos; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Rol rol = (Rol) o;
+        return id != 0 && id == rol.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
+    }
 }

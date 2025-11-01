@@ -14,8 +14,13 @@ import java.util.UUID;
 
 public class PasswordRecoveryService {
 
-    private UsuarioDAO usuarioDAO = new UsuarioDAO();
+    private final UsuarioDAO usuarioDAO;
     private static final long EXPIRATION_TIME_MS = 3600000; // 1 hora
+
+    // Constructor para Inyección de Dependencias.
+    public PasswordRecoveryService(UsuarioDAO usuarioDAO) {
+        this.usuarioDAO = usuarioDAO;
+    }
 
     /**
      * Inicia el proceso de reseteo de contraseña.

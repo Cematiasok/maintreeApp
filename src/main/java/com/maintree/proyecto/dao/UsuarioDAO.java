@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,47 +31,34 @@ public class UsuarioDAO {
     public Usuario findByEmail(String email) {
         String sql = "SELECT * FROM usuarios WHERE email = ?";
         Usuario usuario = null;
-        Connection conn = null; // Declarar fuera del try para usarlo en findRolesByUsuarioId
 
-        try {
-            conn = DatabaseConnection.getConnection();
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, email);
 
-                pstmt.setString(1, email);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    usuario = new Usuario();
+                    usuario.setId(rs.getInt("id")); // Cargar el ID
+                    usuario.setNombre(rs.getString("nombre"));
+                    usuario.setApellido(rs.getString("apellido"));
+                    usuario.setEmail(rs.getString("email"));
+                    usuario.setEspecialidad(rs.getString("especialidad"));
+                    usuario.setPassword(rs.getString("password"));
+                    usuario.setActive(rs.getBoolean("isActive"));
+                    usuario.setResetToken(rs.getString("reset_token"));
 
-                try (ResultSet rs = pstmt.executeQuery()) {
-                    if (rs.next()) {
-                        usuario = new Usuario();
-                        usuario.setId(rs.getInt("id")); // Cargar el ID
-                        usuario.setNombre(rs.getString("nombre"));
-                        usuario.setApellido(rs.getString("apellido"));
-                        usuario.setEmail(rs.getString("email"));
-                        usuario.setDireccion(rs.getString("direccion"));
-                        usuario.setPassword(rs.getString("password"));
-                        usuario.setActive(rs.getBoolean("isActive"));
-                        usuario.setResetToken(rs.getString("reset_token"));
-
-                        java.sql.Timestamp timestamp = rs.getTimestamp("reset_token_expiry");
-                        if (timestamp != null) {
-                            usuario.setResetTokenExpiry(new Date(timestamp.getTime()));
-                        }
-
-                        // Una vez que tenemos el usuario (y su ID), cargamos sus roles
-                        usuario.setRoles(findRolesByUsuarioId(usuario.getId(), conn));
+                    java.sql.Timestamp timestamp = rs.getTimestamp("reset_token_expiry");
+                    if (timestamp != null) {
+                        usuario.setResetTokenExpiry(new Date(timestamp.getTime()));
                     }
+
+                    // Una vez que tenemos el usuario (y su ID), cargamos sus roles
+                    usuario.setRoles(findRolesByUsuarioId(usuario.getId(), conn));
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            // Cerramos la conexión principal
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
         return usuario;
     }
@@ -82,46 +70,34 @@ public class UsuarioDAO {
     public Usuario findByResetToken(String token) {
         String sql = "SELECT * FROM usuarios WHERE reset_token = ?";
         Usuario usuario = null;
-        Connection conn = null;
 
-        try {
-            conn = DatabaseConnection.getConnection();
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, token);
 
-                pstmt.setString(1, token);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    usuario = new Usuario();
+                    usuario.setId(rs.getInt("id")); // Cargar el ID
+                    usuario.setNombre(rs.getString("nombre"));
+                    usuario.setApellido(rs.getString("apellido"));
+                    usuario.setEmail(rs.getString("email"));
+                    usuario.setEspecialidad(rs.getString("especialidad"));
+                    usuario.setPassword(rs.getString("password"));
+                    usuario.setActive(rs.getBoolean("isActive"));
+                    usuario.setResetToken(rs.getString("reset_token"));
 
-                try (ResultSet rs = pstmt.executeQuery()) {
-                    if (rs.next()) {
-                        usuario = new Usuario();
-                        usuario.setId(rs.getInt("id")); // Cargar el ID
-                        usuario.setNombre(rs.getString("nombre"));
-                        usuario.setApellido(rs.getString("apellido"));
-                        usuario.setEmail(rs.getString("email"));
-                        usuario.setDireccion(rs.getString("direccion"));
-                        usuario.setPassword(rs.getString("password"));
-                        usuario.setActive(rs.getBoolean("isActive"));
-                        usuario.setResetToken(rs.getString("reset_token"));
-
-                        java.sql.Timestamp timestamp = rs.getTimestamp("reset_token_expiry");
-                        if (timestamp != null) {
-                            usuario.setResetTokenExpiry(new Date(timestamp.getTime()));
-                        }
-
-                        // Cargamos sus roles usando la misma conexión
-                        usuario.setRoles(findRolesByUsuarioId(usuario.getId(), conn));
+                    java.sql.Timestamp timestamp = rs.getTimestamp("reset_token_expiry");
+                    if (timestamp != null) {
+                        usuario.setResetTokenExpiry(new Date(timestamp.getTime()));
                     }
+
+                    // Cargamos sus roles usando la misma conexión
+                    usuario.setRoles(findRolesByUsuarioId(usuario.getId(), conn));
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
         return usuario;
     }
@@ -153,6 +129,44 @@ public class UsuarioDAO {
         }
     }
 
+    /**
+     * Crea un nuevo usuario en la base de datos.
+     * La contraseña ya debe venir hasheada desde el servicio.
+     * @param usuario El objeto Usuario con los datos a insertar.
+     * @return El ID del usuario recién creado.
+     * @throws SQLException Si ocurre un error en la base de datos.
+     */
+    public int create(Usuario usuario) throws SQLException {
+        String sql = "INSERT INTO usuarios (nombre, apellido, email, password, isActive) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO usuarios (nombre, apellido, email, especialidad, password, isActive) VALUES (?, ?, ?, ?, ?, ?)";
+        int generatedId = 0;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            pstmt.setString(1, usuario.getNombre());
+            pstmt.setString(2, usuario.getApellido());
+            pstmt.setString(3, usuario.getEmail());
+            pstmt.setString(4, usuario.getPassword()); // La contraseña ya debe estar hasheada
+            pstmt.setBoolean(5, usuario.isActive());
+            pstmt.setString(4, usuario.getEspecialidad());
+            pstmt.setString(5, usuario.getPassword()); // La contraseña ya debe estar hasheada
+            pstmt.setBoolean(6, usuario.isActive());
+
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        generatedId = generatedKeys.getInt(1);
+                        usuario.setId(generatedId); // Asignamos el nuevo ID al objeto
+                    }
+                }
+            }
+        }
+        // La excepción se propaga para que el servicio la maneje
+        return generatedId;
+    }
 
     // --- Métodos de Roles ---
 

@@ -20,7 +20,6 @@ public class Usuario {
     private String nombre;
     private String apellido;
     private String email;
-    private String direccion;
     private String password;
     private boolean isActive; // tinyint(1) se mapea a boolean
     private String resetToken;
@@ -71,14 +70,6 @@ public class Usuario {
         this.email = email;
     }
 
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -117,5 +108,18 @@ public class Usuario {
 
     public void setRoles(Set<Rol> roles) {
         this.roles = roles;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Usuario usuario = (Usuario) o;
+        return id != 0 && id == usuario.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
     }
 }

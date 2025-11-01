@@ -1,6 +1,7 @@
 package com.maintree.proyecto.controller;
 
 import com.google.gson.Gson;
+import com.maintree.proyecto.dao.UsuarioDAO;
 import com.maintree.proyecto.model.Usuario;
 import com.maintree.proyecto.service.PasswordRecoveryService;
 import jakarta.servlet.ServletException;
@@ -16,8 +17,19 @@ import java.util.stream.Collectors;
 @WebServlet("/forgot-password")
 public class ForgotPasswordServlet extends HttpServlet {
 
-    private PasswordRecoveryService recoveryService = new PasswordRecoveryService();
-    private Gson gson = new Gson();
+    private final PasswordRecoveryService recoveryService;
+    private final Gson gson = new Gson();
+
+    // Constructor por defecto para el servidor de servlets.
+    // Aquí se crean las dependencias.
+    public ForgotPasswordServlet() {
+        this.recoveryService = new PasswordRecoveryService(new UsuarioDAO());
+    }
+
+    // Constructor para pruebas (inyección de mocks).
+    public ForgotPasswordServlet(PasswordRecoveryService recoveryService) {
+        this.recoveryService = recoveryService;
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
