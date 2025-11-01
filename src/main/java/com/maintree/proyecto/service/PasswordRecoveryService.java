@@ -55,7 +55,7 @@ public class PasswordRecoveryService {
     public boolean finalizePasswordReset(String token, String newPassword) {
         Usuario usuario = usuarioDAO.findByResetToken(token);
 
-        if (usuario == null || usuario.getResetTokenExpiry().before(new Date())) {
+        if (usuario == null || usuario.getResetTokenExpiry() == null || usuario.getResetTokenExpiry().before(new Date())) {
             return false; // Token no encontrado o expirado.
         }
 

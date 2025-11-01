@@ -16,15 +16,15 @@ public class RegisterService {
     private final RolDAO rolDAO;
     private static final String DEFAULT_ROLE = "CLIENTE";
 
-   /* public RegisterService() {
+    public RegisterService() {
         this.usuarioDAO = new UsuarioDAO();
         this.rolDAO = new RolDAO();
     }
-*/
+
     // Constructor para inyección de dependencias (útil para pruebas)
-   public RegisterService(UsuarioDAO usuarioDAO, RolDAO rolDAO) {
-       this.usuarioDAO = usuarioDAO;
-       this.rolDAO = rolDAO;
+    public RegisterService(UsuarioDAO usuarioDAO, RolDAO rolDAO) {
+        this.usuarioDAO = usuarioDAO;
+        this.rolDAO = rolDAO;
     }
 
     /**
@@ -50,8 +50,7 @@ public class RegisterService {
         int newUserId = usuarioDAO.create(newUser);
 
         if (newUserId > 0) {
-            // 4. Asignar el rol por defecto
-            rolDAO.findByNombre(DEFAULT_ROLE);
+            // 4. Asignar el rol seleccionado
             Rol selectedRole = rolDAO.findByNombre(rolNombre);
             if (selectedRole == null) {
                 throw new IllegalStateException("El rol '" + rolNombre + "' seleccionado no es válido o no existe en la base de datos.");

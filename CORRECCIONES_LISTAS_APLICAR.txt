@@ -1,0 +1,338 @@
+================================================================================
+LISTA DE CORRECCIONES LISTAS PARA APLICAR - MAINTREEAPP
+================================================================================
+
+IMPORTANTE: Esta lista contiene las correcciones CRÍTICAS y de ALTA prioridad
+que deben aplicarse primero. Cada corrección incluye el código completo listo
+para copiar y pegar.
+
+================================================================================
+
+CORRECCIÓN #1: CRÍTICO - NullPointerException en PasswordRecoveryService
+================================================================================
+Archivo: src/main/java/com/maintree/proyecto/service/PasswordRecoveryService.java
+Línea: 58
+
+CAMBIAR DE:
+    if (usuario == null || usuario.getResetTokenExpiry().before(new Date())) {
+        return false; // Token no encontrado o expirado.
+    }
+
+CAMBIAR A:
+    if (usuario == null || usuario.getResetTokenExpiry() == null || usuario.getResetTokenExpiry().before(new Date())) {
+        return false; // Token no encontrado o expirado.
+    }
+
+================================================================================
+
+CORRECCIÓN #2: CRÍTICO - Inconsistencia CSS en recuperar.html
+================================================================================
+Archivo: src/main/webApp/recuperar.html
+Línea: 17
+
+CAMBIAR DE:
+      <div class="info-childs">
+
+CAMBIAR A:
+      <div class="Imfo-childs">
+
+================================================================================
+
+CORRECCIÓN #3: CRÍTICO - Validar usuario activo en LoginService
+================================================================================
+Archivo: src/main/java/com/maintree/proyecto/service/LoginService.java
+Líneas: 11-20
+
+CAMBIAR TODO EL MÉTODO:
+
+REEMPLAZAR:
+public class LoginService {
+
+    private UsuarioDAO usuarioDAO = new UsuarioDAO();
+
+    public boolean validarCredenciales(String email, String password) {
+        Usuario usuario = usuarioDAO.findByEmail(email);
+
+        if (usuario == null) {
+            // El usuario no existe
+            return false;
+        }
+
+        // Comparamos la contraseña del formulario con el hash de la BD
+        return BCrypt.checkpw(password, usuario.getPassword());
+    }
+}
+
+POR:
+public class LoginService {
+
+    private UsuarioDAO usuarioDAO = new UsuarioDAO();
+
+    public boolean validarCredenciales(String email, String password) {
+        Usuario usuario = usuarioDAO.findByEmail(email);
+
+        if (usuario == null) {
+            // El usuario no existe
+            return false;
+        }
+
+        // Validar que el usuario esté activo
+        if (!usuario.isActive()) {
+            return false;
+        }
+
+        // Comparamos la contraseña del formulario con el hash de la BD
+        return BCrypt.checkpw(password, usuario.getPassword());
+    }
+}
+
+================================================================================
+
+CORRECCIÓN #4: ALTA - Inyección de dependencias en LoginService
+================================================================================
+Archivo: src/main/java/com/maintree/proyecto/service/LoginService.java
+Línea: 9
+
+CAMBIAR DE:
+public class LoginService {
+
+    private UsuarioDAO usuarioDAO = new UsuarioDAO();
+
+POR:
+public class LoginService {
+
+    private final UsuarioDAO usuarioDAO;
+
+    public LoginService() {
+        this.usuarioDAO = new UsuarioDAO();
+    }
+
+    // Constructor para pruebas
+    public LoginService(UsuarioDAO usuarioDAO) {
+        this.usuarioDAO = usuarioDAO;
+    }
+
+Y mantener el resto del código igual.
+
+================================================================================
+
+CORRECCIÓN #5: ALTA - Eliminar línea de código muerto en RegisterService
+================================================================================
+Archivo: src/main/java/com/maintree/proyecto/service/RegisterService.java
+Línea: 54
+
+ELIMINAR ESTA LÍNEA COMPLETA:
+            rolDAO.findByNombre(DEFAULT_ROLE);
+
+Nota: Esta línea no hace nada, solo busca un rol pero no lo usa.
+
+================================================================================
+
+CORRECCIÓN #6: ALTA - Descomentar constructor en RegisterService
+================================================================================
+Archivo: src/main/java/com/maintree/proyecto/service/RegisterService.java
+Líneas: 19-28
+
+CAMBIAR DE:
+   /* public RegisterService() {
+        this.usuarioDAO = new UsuarioDAO();
+        this.rolDAO = new RolDAO();
+    }
+*/
+    // Constructor para inyección de dependencias (útil para pruebas)
+   public RegisterService(UsuarioDAO usuarioDAO, RolDAO rolDAO) {
+       this.usuarioDAO = usuarioDAO;
+       this.rolDAO = rolDAO;
+    }
+
+CAMBIAR A:
+    public RegisterService() {
+        this.usuarioDAO = new UsuarioDAO();
+        this.rolDAO = new RolDAO();
+    }
+
+    // Constructor para inyección de dependencias (útil para pruebas)
+    public RegisterService(UsuarioDAO usuarioDAO, RolDAO rolDAO) {
+        this.usuarioDAO = usuarioDAO;
+        this.rolDAO = rolDAO;
+    }
+
+================================================================================
+
+CORRECCIÓN #7: ALTA - Validación de contraseñas en reset-password.html
+================================================================================
+Archivo: src/main/webApp/reset-password.html
+DESPUÉS DE LA LÍNEA 61 (dentro del script existente)
+
+AGREGAR:
+    // Validación de contraseñas coincidentes
+    document.getElementById('reset-form').addEventListener('submit', function(e) {
+        const newPass = document.getElementById('newPassword').value;
+        const confirmPass = document.getElementById('confirmPassword').value;
+        
+        if (newPass !== confirmPass) {
+            e.preventDefault();
+            const errorMsg = document.getElementById('error-message');
+            errorMsg.textContent = 'Las contraseñas no coinciden';
+            errorMsg.style.display = 'block';
+            return false;
+        }
+    });
+
+================================================================================
+
+CORRECCIÓN #8: MEDIA - Agregar logging al proyecto (pom.xml)
+================================================================================
+Archivo: pom.xml
+En la sección <dependencies>, DESPUÉS de la línea 46, AGREGAR:
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.8</version>
+        </dependency>
+
+================================================================================
+
+CORRECCIÓN #9: MEDIA - Crear archivo de configuración
+================================================================================
+CREAR NUEVO ARCHIVO: src/main/resources/application.properties
+
+CONTENIDO:
+# Database Configuration
+db.url=jdbc:mysql://localhost:3306/maintreebd
+db.user=root
+db.password=
+
+# Mail Configuration
+mail.host=localhost
+mail.port=1025
+mail.username=noreply@maintree.app
+mail.password=
+mail.auth=false
+
+# Application Configuration
+app.default.role=CLIENTE
+app.token.expiration.ms=3600000
+
+================================================================================
+
+CORRECCIÓN #10: BAJA - Mejorar estructura HTML reset-password.html
+================================================================================
+Archivo: src/main/webApp/reset-password.html
+
+CAMBIAR LÍNEAS 26-61 DE:
+    <div class="form-information">
+        <div class="logo-container">
+            <img src="css/img/logo_Maintree.png" alt="Logo Maintree">
+        </div>
+        <div id="errorMessage" style="color: red;" class="error"></div>
+
+
+    <div class="container">
+        <div class="form-login">
+            <p id="error-message" class="error-text"></p>
+
+            <h2>Restablecer Contraseña</h2>
+            <p>Ingresa tu nueva contraseña.</p>
+
+            <form id="reset-form" action="reset-password" method="POST">
+                
+                <input type="hidden" id="token-input" name="token" value="">
+
+                <div class="input-group">
+                    <label for="newPassword">Nueva Contraseña:</label>
+                    <input type="password" id="newPassword" name="newPassword" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="confirmPassword">Confirmar Contraseña:</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                </div>
+                
+                <button type="submit" class="btn-login">Cambiar Contraseña</button>
+            </form>
+            
+
+        </div>
+    </div>
+
+CAMBIAR A:
+    <div class="form-information">
+        <div class="logo-container">
+            <img src="css/img/logo_Maintree.png" alt="Logo Maintree">
+        </div>
+        <div id="errorMessage" style="color: red;" class="error"></div>
+
+        <div class="form-login">
+            <p id="error-message" class="error-text"></p>
+
+            <h2>Restablecer Contraseña</h2>
+            <p>Ingresa tu nueva contraseña.</p>
+
+            <form id="reset-form" action="reset-password" method="POST">
+                <input type="hidden" id="token-input" name="token" value="">
+
+                <label for="newPassword">Nueva Contraseña:</label>
+                <input type="password" id="newPassword" name="newPassword" required>
+
+                <label for="confirmPassword">Confirmar Contraseña:</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                
+                <button type="submit" class="btn-login">Cambiar Contraseña</button>
+            </form>
+        </div>
+    </div>
+
+Y también cambiar la línea 72 de:
+                document.querySelector('.container').innerHTML = '<h2>Enlace inválido</h2><p>El enlace para restablecer la contraseña no es válido o ha expirado. Por favor, solicita uno nuevo.</p>';
+
+A:
+                document.querySelector('.form-login').innerHTML = '<h2>Enlace inválido</h2><p>El enlace para restablecer la contraseña no es válido o ha expirado. Por favor, solicita uno nuevo.</p>';
+
+================================================================================
+
+CORRECCIÓN #11: BAJA - Eliminar archivos duplicados (si existen)
+================================================================================
+VERIFICAR Y ELIMINAR los siguientes archivos de la RAIZ del proyecto:
+- RegisterService.java (ya existe en src/main/java/com/maintree/proyecto/service/)
+- RegisterServlet.java (ya existe en src/main/java/com/maintree/proyecto/controller/)
+- register.html (ya existe en src/main/webApp/)
+
+NOTA: Antes de eliminar, verifica que los archivos de src/ sean los correctos.
+
+================================================================================
+
+RESUMEN DE ORDEN DE APLICACIÓN
+================================================================================
+
+PASO 1 (CRÍTICO - 15 minutos):
+- Aplicar correcciones #1, #2, #3
+
+PASO 2 (ALTA - 30 minutos):
+- Aplicar correcciones #4, #5, #6, #7
+
+PASO 3 (MEDIA - 45 minutos):
+- Aplicar correcciones #8, #9
+
+PASO 4 (BAJA - 20 minutos):
+- Aplicar correcciones #10, #11
+
+TIEMPO TOTAL ESTIMADO: ~2 horas
+
+================================================================================
+
+DESPUÉS DE APLICAR LAS CORRECCIONES:
+1. Ejecutar: mvn clean compile
+2. Verificar que no haya errores de compilación
+3. Ejecutar: mvn package
+4. Probar la aplicación: mvn cargo:run
+5. Verificar que todas las funcionalidades sigan funcionando
+
+================================================================================
