@@ -74,8 +74,10 @@ public class RegisterServlet extends HttpServlet {
             responseMap.put("message", e.getMessage());
             resp.setStatus(HttpServletResponse.SC_CONFLICT); // 409 Conflicto
         } catch (SQLException e) {
+            // Importante: No exponer detalles de la base de datos al cliente.
+            e.printStackTrace(); // Registrar el error completo en el log del servidor.
             responseMap.put("success", false);
-            responseMap.put("message", "Error interno del servidor.");
+            responseMap.put("message", "Ocurrió un error inesperado. Por favor, inténtalo de nuevo más tarde.");
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500 Error del servidor
         }
 
