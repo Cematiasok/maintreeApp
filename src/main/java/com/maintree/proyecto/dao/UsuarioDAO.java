@@ -137,7 +137,6 @@ public class UsuarioDAO {
      * @throws SQLException Si ocurre un error en la base de datos.
      */
     public int create(Usuario usuario) throws SQLException {
-        String sql = "INSERT INTO usuarios (nombre, apellido, email, password, isActive) VALUES (?, ?, ?, ?, ?)";
         String sql = "INSERT INTO usuarios (nombre, apellido, email, especialidad, password, isActive) VALUES (?, ?, ?, ?, ?, ?)";
         int generatedId = 0;
 
@@ -147,8 +146,6 @@ public class UsuarioDAO {
             pstmt.setString(1, usuario.getNombre());
             pstmt.setString(2, usuario.getApellido());
             pstmt.setString(3, usuario.getEmail());
-            pstmt.setString(4, usuario.getPassword()); // La contraseña ya debe estar hasheada
-            pstmt.setBoolean(5, usuario.isActive());
             pstmt.setString(4, usuario.getEspecialidad());
             pstmt.setString(5, usuario.getPassword()); // La contraseña ya debe estar hasheada
             pstmt.setBoolean(6, usuario.isActive());

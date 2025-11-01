@@ -30,11 +30,12 @@ public class RegisterService {
     /**
      * Registra un nuevo usuario en el sistema.
      * @param newUser El objeto Usuario con los datos del formulario.
+     * @param rolNombre El nombre del rol seleccionado en el formulario.
      * @return true si el registro fue exitoso.
      * @throws SQLException si hay un error con la base de datos.
      * @throws IllegalStateException si el email ya está en uso o el rol por defecto no existe.
      */
-    public boolean registerUser(Usuario newUser) throws SQLException, IllegalStateException {
+    public boolean registerUser(Usuario newUser, String rolNombre) throws SQLException, IllegalStateException {
         // 1. Verificar si el email ya existe
         if (usuarioDAO.findByEmail(newUser.getEmail()) != null) {
             throw new IllegalStateException("El correo electrónico ya está registrado.");
@@ -51,12 +52,12 @@ public class RegisterService {
         if (newUserId > 0) {
             // 4. Asignar el rol por defecto
             Rol defaultRole = rolDAO.findByNombre(DEFAULT_ROLE);
-            if (defaultRole == null) {
-                // En un caso real, esto debería ser un error crítico de configuración
-                throw new IllegalStateException("El rol por defecto '" + DEFAULT_ROLE + "' no se encuentra en la base de datos.");
+            Rol selectedRole = rolDAO.findByNombre(rolNombre);
+            if (selectedRole == null) {
+                throw new IllegalStateException("El rol '" + rolNombre + "' seleccionado no es válido o no existe en la base de datos.");
             }
-            Set<Rol> roles = Collections.singleton(defaultRole);
-            usuarioDAO.actualizarRolesUsuario(newUserId, roles);
+            Set<Rol> roles = Collections.singleton(selectedRole);
+            usuarioDAO.actualizarRolesUsuario(newUserId, roles); // Usamos el método que ya tienes
             return true;
         }
 

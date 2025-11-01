@@ -20,6 +20,7 @@ public class Usuario {
     private String nombre;
     private String apellido;
     private String email;
+    private String especialidad; // Nuevo campo
     private String password;
     private boolean isActive; // tinyint(1) se mapea a boolean
     private String resetToken;
@@ -29,6 +30,10 @@ public class Usuario {
     // Esto no es una columna en 'usuarios', sino que se carga
     // desde la tabla 'usuariorol'.
     private Set<Rol> roles;
+
+    // Campo temporal para recibir el nombre del rol desde el JSON del formulario.
+    // No corresponde a una columna en la tabla 'usuarios'.
+    private String rol;
 
     // Constructor (opcional, pero buena práctica)
     public Usuario() {
@@ -68,6 +73,14 @@ public class Usuario {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getEspecialidad() {
+        return especialidad;
+    }
+
+    public void setEspecialidad(String especialidad) {
+        this.especialidad = especialidad;
     }
 
     public String getPassword() {
@@ -110,6 +123,14 @@ public class Usuario {
         this.roles = roles;
     }
 
+    // Getter y Setter para el campo temporal 'rol'
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

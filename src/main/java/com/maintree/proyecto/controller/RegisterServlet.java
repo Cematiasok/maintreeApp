@@ -1,6 +1,7 @@
 package com.maintree.proyecto.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.maintree.proyecto.dao.RolDAO;
 import com.maintree.proyecto.dao.UsuarioDAO;
 import com.maintree.proyecto.model.Usuario;
@@ -39,7 +40,7 @@ public class RegisterServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // 1. Leer el cuerpo JSON de la petición
         String body = req.getReader().lines().collect(Collectors.joining());
-        Usuario newUser = gson.fromJson(body, Usuario.class);
+
 
         // 2. Preparar la respuesta
         resp.setContentType("application/json");
@@ -48,8 +49,16 @@ public class RegisterServlet extends HttpServlet {
         Map<String, Object> responseMap = new HashMap<>();
 
         try {
-            // 3. Intentar registrar al usuario
-            boolean success = registerService.registerUser(newUser);
+            // 3. Parsear el JSON para extraer el rol y crear el usuario
+            JsonObject jsonObject = gson.fromJson(body, JsonObject.class);
+
+            // Extraer el nombre del rol como un String. Si no viene, lanza una excepción.
+            String rolNombre = jsonObject.get("rol").getAsString();
+
+            // Convertir el resto del JSON a un objeto Usuario
+            Usuario newUser = gson.fromJson(jsonObject, Usuario.class);
+
+            boolean success = registerService.registerUser(newUser, rolNombre);
             if (success) {
                 responseMap.put("success", true);
                 responseMap.put("message", "¡Registro exitoso!");
@@ -60,7 +69,7 @@ public class RegisterServlet extends HttpServlet {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Solicitud incorrecta
             }
         } catch (IllegalStateException e) {
-            // Captura el error de "email ya existe"
+            // Captura el error de "email ya existe" o "rol no válido"
             responseMap.put("success", false);
             responseMap.put("message", e.getMessage());
             resp.setStatus(HttpServletResponse.SC_CONFLICT); // 409 Conflicto
