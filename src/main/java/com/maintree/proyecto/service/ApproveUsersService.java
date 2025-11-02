@@ -22,4 +22,15 @@ public class ApproveUsersService {
             }
         }
     }
+
+    // Devuelve la lista de usuarios pendientes de aprobación (isActive == false)
+    public List<Usuario> getPendingUsers() {
+        // Intentamos incluir también aquellos registros donde isActive es NULL
+        try {
+            return usuarioRepository.findByIsActiveFalseOrIsActiveIsNull();
+        } catch (Exception ex) {
+            // Fallback: si por alguna razón no existe el método, usamos la versión simple
+            return usuarioRepository.findByIsActiveFalse();
+        }
+    }
 }

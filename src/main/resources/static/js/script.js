@@ -155,7 +155,8 @@ document.addEventListener('DOMContentLoaded', function() {
          * (Esta función es igual que antes)
          */
         function fetchPendingUsers() {
-            fetch('/usuarios')
+            // Llamamos al endpoint nuevo que devuelve solo usuarios pendientes
+            fetch('/api/admin/usuarios-pendientes')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Error al cargar los usuarios: ' + response.statusText);
@@ -163,9 +164,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     return response.json();
                 })
                 .then(users => {
-                    // Filter users that are not active
-                    const pendingUsers = users.filter(user => !user.active);
-                    populateTable(pendingUsers);
+                        // El endpoint ya devuelve solo usuarios pendientes (isActive == false)
+                        populateTable(users);
                 })
                 .catch(error => {
                     console.error(error);
@@ -224,8 +224,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             console.log('Enviando IDs para aprobar:', idsToApprove);
 
-            // 3. Enviar el ARRAY de IDs al servidor
-            fetch('/confirmar-roles-lote', {
+            // 3. Enviar el ARRAY de IDs al servidor (ruta del controlador: /api/admin/confirmar-roles-lote)
+            fetch('/api/admin/confirmar-roles-lote', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(idsToApprove) // Enviamos un array de IDs, ej: [1, 5, 12]

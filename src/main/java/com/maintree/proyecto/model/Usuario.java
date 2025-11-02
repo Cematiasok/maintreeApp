@@ -140,6 +140,12 @@ public class Usuario {
         this.roles = roles;
     }
 
+    // Añadimos un getter con nombre 'getActive' para que Jackson serialice la propiedad
+    // como 'active' (el frontend espera 'user.active').
+    public Boolean getActive() {
+        return getIsActive();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
