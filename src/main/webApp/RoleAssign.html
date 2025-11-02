@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+Antique&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <title>formulario de inicio de sesión </title>
+</head>
+<body>
+    <div class="container-form">
+        <div class="inform">
+            <div class="Imfo-childs">
+                <h2>Maintree</h2>
+                <p>Gestion inteligente de mantenimiento indistrial.</p>
+            </div>
+        </div>
+
+
+        <div class="form-inf">
+            <div class="logo-container">
+                <img src="css/img/logo_Maintree.png" alt="Logo Maintree">
+            </div>
+            <div id="errorMessage" style="color: red;" class="error"></div>
+            <div class="admin-panel">
+    
+    <h2>Confirmación de Roles</h2>
+    <h3>Usuarios pendientes de activación</h3>
+
+    <form id="adminConfirmForm">
+        <table class="approval-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol Solicitado</th>
+                    <th>Confirmar (Tilde)</th>
+                    </tr>
+            </thead>
+            
+            <tbody id="user-list-body">
+                <tr>
+                    <td colspan="4" style="text-align: center;">Cargando usuarios...</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="form-submit-container">
+            <button type="submit" class="btn btn-approve-all">
+                Actualizar Confirmaciones
+            </button>
+        </div>
+    </form>
+    
+</div>
+
+
+
+        
+
+    </div>
+
+    </div>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

@@ -14,8 +14,6 @@ public class RegisterService {
 
     private final UsuarioDAO usuarioDAO;
     private final RolDAO rolDAO;
-    private static final String DEFAULT_ROLE = "CLIENTE";
-
     public RegisterService() {
         this.usuarioDAO = new UsuarioDAO();
         this.rolDAO = new RolDAO();

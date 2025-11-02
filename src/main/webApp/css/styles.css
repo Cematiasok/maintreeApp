@@ -50,7 +50,7 @@ body {
     margin-bottom: 10px;
 }
 .form-information{
-  width:40%;
+  width: 40%;
   display:flex;
   flex-direction:column;
   justify-content:center;
@@ -134,3 +134,103 @@ body {
       .information{ display:none; }
       .form-information{ width:100%; padding:30px; }
     }
+/*
+=====================================================
+  CSS (AISLADO) PARA LA TABLA DE ADMIN Y EL BOTÓN SUBMIT
+=====================================================
+*/
+h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #495057;
+}
+h3 {
+    color: #495057;
+    text-align: center;
+    margin-bottom: 10px;
+}
+.form-inf
+{
+  width: 50%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  padding:50px;
+  background:#fff;
+}
+.inform {
+    background-image: url(img/Fondo_casco.png);
+    background-size: cover; 
+    background-position: right 30% center; 
+    background-repeat: no-repeat; 
+    padding: 30px;
+    width: 30%;
+    display: flex;
+    flex-direction: column;}
+/* 1. La tabla SÓLO DENTRO del panel */
+.admin-panel .approval-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* Sombra sutil */
+}
+
+/* 2. Celdas y Encabezados SÓLO DENTRO de esa tabla */
+.admin-panel .approval-table th,
+.admin-panel .approval-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #D8F3DC;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #ffff;
+}
+
+/* 3. Encabezados (Nombre, Email...) */
+.admin-panel .approval-table th {
+  /* ADAPTA ESTE COLOR a tu paleta de Maintree */
+  background-color: #2D6A4F; 
+  color: white;
+  font-weight: 600;
+}
+
+/* 4. Filas alternas (para mejor lectura) */
+.admin-panel .approval-table tbody tr:nth-of-type(even) {
+  background-color: #1f0303;
+}
+
+/* 5. Checkbox (Tilde) */
+.admin-panel .approval-table input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  /* Centrar el checkbox */
+  display: block;
+  margin: 0 auto;
+}
+
+/* 6. Contenedor del nuevo botón de submit */
+.admin-panel .form-submit-container {
+  text-align: right; /* Alinea el botón a la derecha */
+  margin-top: 20px;
+}
+
+/* 7. Estilo del nuevo botón de submit */
+.admin-panel .btn-approve-all {
+  /* ADAPTA ESTOS COLORES a tu paleta de Maintree */
+  background-color: #52B788; /* Verde para "éxito" */
+  color: white;
+  
+  /* Estilos generales de botón */
+  border: none;
+  padding: 12px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  transition: background-color 0.2s ease;
+}
+
+.admin-panel .btn-approve-all:hover {
+  background-color: #218838; /* Verde más oscuro */
+}
