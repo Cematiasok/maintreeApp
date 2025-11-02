@@ -1,47 +1,56 @@
 package com.maintree.proyecto.model;
 
-import java.util.Date;
-import java.util.Set;
-import java.util.HashSet;
+import jakarta.persistence.*;
 
-/**
- * Clase Modelo (POJO) que representa la tabla 'usuarios' de la base de datos.
- *
- * CORREGIDO:
- * - Se usa 'int id' para coincidir con 'int(11)'.
- * - Se añade 'nombre', 'apellido', 'direccion', 'isActive'.
- * - Se usa 'Date' de java.util.Date para 'reset_token_expiry'.
- * - Se añade el 'Set<Rol> roles' para la relación.
- */
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "usuarios")
 public class Usuario {
 
-    // --- Campos de la tabla 'usuarios' ---
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name = "nombre")
     private String nombre;
+
+    @Column(name = "apellido")
     private String apellido;
+
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
-    private String especialidad; // Nuevo campo
+
+    @Column(name = "especialidad")
+    private String especialidad;
+
+    @Column(name = "password", nullable = false)
     private String password;
-    private boolean isActive; // tinyint(1) se mapea a boolean
+
+    @Column(name = "isActive")
+    private boolean isActive;
+
+    @Column(name = "reset_token")
     private String resetToken;
-    private Date resetTokenExpiry; // datetime se mapea a java.util.Date
 
-    // --- Relación con Roles ---
-    // Esto no es una columna en 'usuarios', sino que se carga
-    // desde la tabla 'usuariorol'.
-    private Set<Rol> roles;
+    @Column(name = "reset_token_expiry")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date resetTokenExpiry;
 
-    // Campo temporal para recibir el nombre del rol desde el JSON del formulario.
-    // No corresponde a una columna en la tabla 'usuarios'.
-    private String rol;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "usuariorol",
+        joinColumns = @JoinColumn(name = "usuario_id"),
+        inverseJoinColumns = @JoinColumn(name = "rol_id")
+    )
+    private Set<Rol> roles = new HashSet<>();
 
-    // Constructor (opcional, pero buena práctica)
     public Usuario() {
-        this.roles = new HashSet<>(); // Inicializar el Set para evitar NullPointerException
-        this.isActive = false; // Valor por defecto
+        this.roles = new HashSet<>();
+        this.isActive = false;
     }
-
-    // --- Getters y Setters ---
 
     public int getId() {
         return id;
@@ -123,14 +132,6 @@ public class Usuario {
         this.roles = roles;
     }
 
-    // Getter y Setter para el campo temporal 'rol'
-    public String getRol() {
-        return rol;
-    }
-
-    public void setRol(String rol) {
-        this.rol = rol;
-    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

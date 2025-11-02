@@ -1,24 +1,19 @@
 package com.maintree.proyecto.service;
 
-import com.maintree.proyecto.dao.UsuarioDAO;
+import com.maintree.proyecto.dao.UsuarioRepository;
 import com.maintree.proyecto.model.Usuario;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class LoginService {
 
-    private final UsuarioDAO usuarioDAO;
-
-    public LoginService() {
-        this.usuarioDAO = new UsuarioDAO();
-    }
-
-    // Constructor para pruebas
-    public LoginService(UsuarioDAO usuarioDAO) {
-        this.usuarioDAO = usuarioDAO;
-    }
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     public boolean validarCredenciales(String email, String password) {
-        Usuario usuario = usuarioDAO.findByEmail(email);
+        Usuario usuario = usuarioRepository.findByEmail(email);
 
         if (usuario == null) {
             // El usuario no existe

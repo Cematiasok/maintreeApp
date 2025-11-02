@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const password = document.getElementById('password').value;
             const errorMessageDiv = document.getElementById('errorMessage');
 
-            fetch('login', {
+            fetch('/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: email, password: password })
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Muestra un mensaje de "Procesando..."
             messageContainer.innerHTML = `<p class="info-message">Procesando su solicitud...</p>`;
 
-            fetch('forgot-password', {
+            fetch('/forgot-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: email })
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = Object.fromEntries(formData.entries());
     
             // 7. Se envían los datos al servidor usando la API Fetch.
-            fetch('register', { // Esta será la URL de tu RegisterServlet
+            fetch('/register', { // Esta será la URL de tu RegisterServlet
                 method: 'POST', // El método es POST porque estamos creando un nuevo recurso (un usuario).
                 headers: {
                     'Content-Type': 'application/json' // Se avisa al servidor que el cuerpo de la petición es un JSON.
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
          * (Esta función es igual que antes)
          */
         function fetchPendingUsers() {
-            fetch('usuarios')
+            fetch('/usuarios')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Error al cargar los usuarios: ' + response.statusText);
@@ -225,8 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Enviando IDs para aprobar:', idsToApprove);
 
             // 3. Enviar el ARRAY de IDs al servidor
-            //fetch('/admin/confirmar-roles-lote', { cambiar fectch si falla
-            fetch('confirmar-roles-lote', {
+            fetch('/confirmar-roles-lote', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(idsToApprove) // Enviamos un array de IDs, ej: [1, 5, 12]

@@ -1,11 +1,19 @@
 package com.maintree.proyecto.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "permiso")
 public class Permiso {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    // NOTA: Los nombres de permisos deberían ser constantes en mayúsculas y guiones bajos
-    // para seguir convenciones (ej. MANAGE_USERS, READ_REPORTS).
-    private String nombre; // Ej: "MANAGE_USERS", "READ_REPORTS", "POST_COMMENTS"
+
+    @Column(name = "nombre", unique = true, nullable = false)
+    private String nombre;
+
+    @Column(name = "descripcion")
     private String descripcion;
 
     // Getters y Setters

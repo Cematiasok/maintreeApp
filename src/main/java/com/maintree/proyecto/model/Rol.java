@@ -1,17 +1,34 @@
 package com.maintree.proyecto.model;
 
 import java.util.HashSet;
+
+
+import jakarta.persistence.*;
+
+//import java.util.HashSet;
 import java.util.Set;
 
+@Entity
+@Table(name = "rol")
 public class Rol {
-    private int id; // Cambiado de Long a int
-    private String nombre; // Ej: "ADMIN", "USER", "SUPERVISOR"
-    private String descripcion; // Añadir este campo
-    private Set<Permiso> permisos;
 
-    public Rol() {
-        this.permisos = new HashSet<>(); // Inicializar para evitar NullPointerException
-    }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(name = "nombre", unique = true, nullable = false)
+    private String nombre;
+
+    @Column(name = "descripcion")
+    private String descripcion;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "rolpermiso",
+        joinColumns = @JoinColumn(name = "rol_id"),
+        inverseJoinColumns = @JoinColumn(name = "permiso_id")
+    )
+    private Set<Permiso> permisos = new HashSet<>();
     // Getters y Setters
     public int getId() { // Cambiado de Long a int
         return id;
