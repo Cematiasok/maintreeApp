@@ -38,7 +38,7 @@ public class Usuario {
     // Constructor (opcional, pero buena práctica)
     public Usuario() {
         this.roles = new HashSet<>(); // Inicializar el Set para evitar NullPointerException
-        this.isActive = true; // Valor por defecto
+        this.isActive = false; // Valor por defecto
     }
 
     // --- Getters y Setters ---
