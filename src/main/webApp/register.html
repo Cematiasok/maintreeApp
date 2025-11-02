@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+Antique&display=swap" rel="stylesheet">
@@ -28,43 +30,57 @@
         <!-- 1. El formulario tiene un ID único ('registerForm') para que JavaScript pueda encontrarlo y manejarlo. -->
         <form id="registerForm" class="form-login">
             <!-- 2. Cada campo 'input' tiene un 'name' (ej: "nombre"). Este 'name' se usa como la clave para el dato que el usuario introduce. -->
-            <label for="nombre">Nombre</label>
-            <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Tu nombre" required>
+            </div>
 
-            <label for="apellido">Apellido</label>
-            <input type="text" id="apellido" name="apellido" placeholder="Tu apellido" required>
+            <div class="mb-3">
+                <label for="apellido" class="form-label">Apellido</label>
+                <input type="text" class="form-control" id="apellido" name="apellido" placeholder="Tu apellido" required>
+            </div>
 
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="correo@ejemplo.com" required>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="correo@ejemplo.com" required>
+            </div>
 
-            <label for="rol">Rol</label>
-            <select id="rol" name="rol" required>
-                <option value="" disabled selected>Selecciona tu rol</option>
-                <option value="Técnico">Técnico</option>
-                <option value="Supervisor">Supervisor</option>
-                <option value="Automatista">Automatista</option>
-            </select>
+            <div class="mb-3">
+                <label for="rol" class="form-label">Rol</label>
+                <select class="form-select" id="rol" name="rol" required>
+                    <option value="" disabled selected>Selecciona tu rol</option>
+                    <option value="Técnico">Técnico</option>
+                    <option value="Supervisor">Supervisor</option>
+                    <option value="Automatista">Automatista</option>
+                </select>
+            </div>
 
-            <label for="especialidad">Especialidad</label>
-            <select id="especialidad" name="especialidad" required>
-                <option value="" disabled selected>Selecciona tu especialidad</option>
-                <option value="Electromecanico">Electromecánico</option>
-                <option value="Mecanico">Mecánico</option>
-                <option value="Eléctrico">Eléctrico</option>
-            </select>
+            <div class="mb-3">
+                <label for="especialidad" class="form-label">Especialidad</label>
+                <select class="form-select" id="especialidad" name="especialidad" required>
+                    <option value="" disabled selected>Selecciona tu especialidad</option>
+                    <option value="Electromecanico">Electromecánico</option>
+                    <option value="Mecanico">Mecánico</option>
+                    <option value="Eléctrico">Eléctrico</option>
+                </select>
+            </div>
 
-            <label for="password">Contraseña</label>
-            <input type="password" id="password" name="password" placeholder="**********" required>
+            <div class="mb-3">
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="**********" required>
+            </div>
 
             <!-- 3. El botón de tipo "submit" dentro de un formulario intenta enviarlo cuando se hace clic. JavaScript interceptará esta acción. -->
-            <button type="submit" class="btn-login">REGISTRARSE</button>
-            <p class="signup">¿Ya tienes cuenta? <a href="main.html">INICIA SESIÓN</a></p>
+            <button type="submit" class="btn btn-primary w-100 btn-login">REGISTRARSE</button>
+            <p class="signup text-center mt-3">¿Ya tienes cuenta? <a href="main.html">INICIA SESIÓN</a></p>
         </form>
     </div>
 </div>
 
 <!-- 4. Se carga el archivo JavaScript externo. Toda la lógica para enviar el formulario al servidor está dentro de este fichero. -->
 <script src="js/script.js"></script>
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
