@@ -30,7 +30,7 @@ public class Usuario {
     private String password;
 
     @Column(name = "isActive")
-    private boolean isActive;
+    private Boolean isActive;
 
     @Column(name = "reset_token")
     private String resetToken;
@@ -49,7 +49,15 @@ public class Usuario {
 
     public Usuario() {
         this.roles = new HashSet<>();
-        this.isActive = false;
+        this.isActive = Boolean.FALSE;  // Explícitamente usar Boolean.FALSE
+    }
+
+    public Boolean getIsActive() {
+        return isActive != null ? isActive : Boolean.FALSE;  // Nunca retorna null
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive != null ? isActive : Boolean.FALSE;  // Nunca guarda null
     }
 
     public int getId() {

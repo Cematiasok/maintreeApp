@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const password = document.getElementById('password').value;
             const errorMessageDiv = document.getElementById('errorMessage');
 
-            fetch('/login', {
+            fetch('/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: email, password: password })
@@ -80,12 +80,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = Object.fromEntries(formData.entries());
     
             // 7. Se envían los datos al servidor usando la API Fetch.
-            fetch('/register', { // Esta será la URL de tu RegisterServlet
-                method: 'POST', // El método es POST porque estamos creando un nuevo recurso (un usuario).
+            fetch('/api/register', { // URL actualizada para coincidir con el controlador Spring Boot
+                method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json' // Se avisa al servidor que el cuerpo de la petición es un JSON.
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(data) // Se convierte el objeto JavaScript a un texto en formato JSON para poder enviarlo.
+                body: JSON.stringify(data)
             })
             // 8. Cuando el servidor responde, esta promesa se resuelve. Se convierte la respuesta (que también es JSON) a un objeto JavaScript.
             .then(response => response.json())
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     messageDiv.style.color = 'green';
                     // Se espera 2 segundos y se redirige al usuario a la página de inicio de sesión.
                     setTimeout(() => {
-                        window.location.href = 'main.html';
+                        window.location.href = 'index.html';
                     }, 2000);
                 } else {
                     // 11. Si el servidor respondió con 'success: false', se muestra el mensaje de error que vino en la respuesta.
