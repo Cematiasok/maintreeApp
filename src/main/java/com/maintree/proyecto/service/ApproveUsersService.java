@@ -12,6 +12,9 @@ public class ApproveUsersService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    
+    @Autowired
+    private com.maintree.proyecto.dao.RolRepository rolRepository;
 
     public void approveUsers(List<Integer> userIds) {
         for (Integer userId : userIds) {
@@ -32,5 +35,28 @@ public class ApproveUsersService {
             // Fallback: si por alguna razón no existe el método, usamos la versión simple
             return usuarioRepository.findByIsActiveFalse();
         }
+    }
+
+    // Aprobar un usuario y asignarle un rol por nombre
+    public boolean approveUserWithRole(int userId, String rolNombre) {
+        Usuario usuario = usuarioRepository.findById(userId).orElse(null);
+        if (usuario == null) return false;
+        com.maintree.proyecto.model.Rol rol = rolRepository.findByNombre(rolNombre);
+        if (rol == null) return false;
+        java.util.Set<com.maintree.proyecto.model.Rol> roles = usuario.getRoles();
+        roles.add(rol);
+        usuario.setRoles(roles);
+        usuario.setActive(true);
+        usuarioRepository.save(usuario);
+        return true;
+    }
+
+    // Rechazar: eliminar usuario (se puede cambiar a otro comportamiento como marcar "rejected")
+    public boolean rejectUser(int userId) {
+        if (usuarioRepository.existsById(userId)) {
+            usuarioRepository.deleteById(userId);
+            return true;
+        }
+        return false;
     }
 }

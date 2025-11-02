@@ -16,4 +16,16 @@ public class UsuarioService {
     public List<Usuario> findAll() {
         return usuarioRepository.findAll();
     }
+
+    public java.util.Optional<Usuario> findById(int id) {
+        return usuarioRepository.findById(id);
+    }
+
+    public Usuario save(Usuario u) {
+        return usuarioRepository.save(u);
+    }
+
+    public void deleteById(int id) {
+        usuarioRepository.deleteById(id);
+    }
 }

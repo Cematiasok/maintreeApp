@@ -17,6 +17,12 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    // Si el usuario es admin, redirigir al panel de administración
+                    if (data.isAdmin) {
+                        window.location.href = 'user-admin.html';
+                        return;
+                    }
+                    // Usuario normal: mostrar mensaje o redirigir al inicio
                     document.getElementById('loginForm').style.display = 'none';
                     const messageDiv = document.getElementById('errorMessage');
                     messageDiv.textContent = '¡Sesión iniciada con éxito!';

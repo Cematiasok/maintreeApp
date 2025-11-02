@@ -2,6 +2,8 @@ package com.maintree.proyecto.controller;
 
 import com.maintree.proyecto.model.Usuario;
 import com.maintree.proyecto.service.LoginService;
+import com.maintree.proyecto.dao.UsuarioRepository;
+import com.maintree.proyecto.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;  // Incluye CrossOrigin
@@ -16,6 +18,9 @@ public class LoginController {
 
     @Autowired
     private LoginService loginService;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Usuario usuario) {
@@ -33,8 +38,19 @@ public class LoginController {
                 boolean esValido = loginService.validarCredenciales(usuario.getEmail(), usuario.getPassword());
                 Map<String, Object> responseMap = new HashMap<>();
                 if (esValido) {
+                    // Recuperar usuario para incluir roles en la respuesta
+                    Usuario u = usuarioRepository.findByEmail(usuario.getEmail());
                     responseMap.put("success", true);
                     responseMap.put("message", "Inicio de sesión correcto");
+                    if (u != null && u.getRoles() != null) {
+                        java.util.List<String> roles = u.getRoles().stream().map(r -> r.getNombre()).toList();
+                        responseMap.put("roles", roles);
+                        boolean isAdmin = roles.stream().anyMatch(name -> name != null && name.toUpperCase().contains("ADMIN"));
+                        responseMap.put("isAdmin", isAdmin);
+                    } else {
+                        responseMap.put("roles", java.util.Collections.emptyList());
+                        responseMap.put("isAdmin", false);
+                    }
                     return ResponseEntity.ok(responseMap);
                 } else {
                     responseMap.put("success", false);
