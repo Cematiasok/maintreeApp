@@ -88,4 +88,15 @@ public class UsuarioController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/especialidades")
+    public java.util.List<String> getEspecialidades() {
+        return usuarioService.findAll().stream()
+                .map(Usuario::getEspecialidad)
+                .filter(java.util.Objects::nonNull)
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .distinct()
+                .toList();
+    }
 }

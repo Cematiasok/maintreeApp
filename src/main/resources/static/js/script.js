@@ -49,7 +49,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Muestra un mensaje de "Procesando..."
             messageContainer.innerHTML = `<p class="info-message">Procesando su solicitud...</p>`;
 
-            fetch('/forgot-password', {
+            // Nota: el controlador REST está bajo el prefijo /api
+            fetch('/api/forgot-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: email })
@@ -297,20 +298,24 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData.entries());
 
-            fetch('reset-password', {
+            // Enviar al endpoint REST correcto con token como query param y cuerpo JSON
+            const tokenParam = token ? '?token=' + encodeURIComponent(token) : '';
+            fetch('/api/reset-password' + tokenParam, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                 },
-                body: new URLSearchParams(data)
+                body: JSON.stringify({ newPassword: newPass, confirmPassword: confirmPass })
             })
-            .then(response => {
-                if (response.redirected) {
-                    window.location.href = response.url;
+            .then(async response => {
+                if (response.ok) {
+                    // Redirigir al login o página principal con indicador de éxito
+                    window.location.href = 'index.html?reset=success';
                 } else {
-                    // If the server doesn't redirect, handle it here
-                    // For now, we just reload to see any server-rendered error page
-                    window.location.reload();
+                    // Leer el texto devuelto por el servidor (mensaje de error)
+                    const text = await response.text();
+                    errorMsg.textContent = text || 'Error al restablecer la contraseña.';
+                    errorMsg.style.display = 'block';
                 }
             })
             .catch(error => {

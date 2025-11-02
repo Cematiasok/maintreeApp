@@ -3,12 +3,49 @@ document.addEventListener('DOMContentLoaded', function() {
     const newUserBtn = document.getElementById('newUserBtn');
     const userModalEl = document.getElementById('userModal');
     const userModal = new bootstrap.Modal(userModalEl);
+    const deleteModalEl = document.getElementById('deleteConfirmModal');
+    const deleteModal = deleteModalEl ? new bootstrap.Modal(deleteModalEl) : null;
     const userForm = document.getElementById('userForm');
     const saveUserBtn = document.getElementById('saveUserBtn');
 
     function formatRoles(roles) {
         if (!roles) return '';
         return roles.map(r => r.nombre || r).join(', ');
+    }
+
+    // Cargar opciones de roles y especialidades desde el backend
+    function fetchRolesAndEspecialidades() {
+        // Roles
+        fetch('/api/roles')
+            .then(r => r.json())
+            .then(roles => {
+                const rolesSelect = document.getElementById('rolesSelect');
+                if (!rolesSelect) return;
+                // Usar el atributo disabled para el placeholder
+                rolesSelect.innerHTML = '<option value="" disabled selected>Seleccione un rol</option>';
+                roles.forEach(role => {
+                    const option = document.createElement('option');
+                    option.value = role.nombre;
+                    option.textContent = role.nombre;
+                    rolesSelect.appendChild(option);
+                });
+            }).catch(err => console.error('No se pudieron cargar roles', err));
+
+        // Especialidades
+        fetch('/api/especialidades')
+            .then(r => r.json())
+            .then(especialidades => {
+                const espSelect = document.getElementById('especialidadSelect');
+                if (!espSelect) return;
+                // Mantener la opción 'Sin especificar' y añadir las demás
+                espSelect.innerHTML = '<option value="">Sin especificar</option>';
+                especialidades.forEach(e => {
+                    const opt = document.createElement('option');
+                    opt.value = e;
+                    opt.textContent = e;
+                    espSelect.appendChild(opt);
+                });
+            }).catch(err => console.error('No se pudieron cargar especialidades', err));
     }
 
     function fetchUsers() {
@@ -50,10 +87,67 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.addEventListener('click', () => openEdit(btn.dataset.id));
         });
         document.querySelectorAll('.btn-delete').forEach(btn => {
-            btn.addEventListener('click', () => deleteUser(btn.dataset.id));
+            btn.addEventListener('click', () => showDeleteModal(btn.dataset.id));
         });
         document.querySelectorAll('.btn-toggle').forEach(btn => {
             btn.addEventListener('click', () => toggleActive(btn.dataset.id));
+        });
+    }
+
+    // Mostrar modal de confirmación con opciones para eliminar o alternar estado
+    function showDeleteModal(id) {
+        if (!deleteModal) {
+            // Fallback: confirmar con window.confirm
+            if (!confirm('¿Eliminar usuario #' + id + '? Esta acción es definitiva.')) return;
+            fetch(`/api/usuarios/${id}`, { method: 'DELETE' })
+                .then(r => { if (r.ok) fetchUsers(); else alert('Error al eliminar'); })
+                .catch(err => { console.error(err); alert('Error de red'); });
+            return;
+        }
+
+        // Llenar mensaje con info del usuario si está disponible
+        const messageEl = document.getElementById('deleteModalMessage');
+        messageEl.textContent = '¿Realmente quiere eliminar este usuario?';
+
+        // Guardar id en botones dataset
+        const modalDeleteBtn = document.getElementById('modalDeleteBtn');
+        const modalToggleBtn = document.getElementById('modalToggleBtn');
+        modalDeleteBtn.dataset.userid = id;
+        modalToggleBtn.dataset.userid = id;
+
+        deleteModal.show();
+    }
+
+    // Handler para el botón Eliminar definitivamente
+    if (document.getElementById('modalDeleteBtn')) {
+        document.getElementById('modalDeleteBtn').addEventListener('click', function() {
+            const id = this.dataset.userid;
+            if (!id) return;
+            fetch(`/api/usuarios/${id}`, { method: 'DELETE' })
+                .then(r => {
+                    if (r.ok) {
+                        deleteModal.hide();
+                        fetchUsers();
+                    } else {
+                        r.text().then(t => alert('Error al eliminar: ' + t));
+                    }
+                })
+                .catch(err => { console.error(err); alert('Error de red'); });
+        });
+    }
+
+    // Handler para Activar/Desactivar desde el modal
+    if (document.getElementById('modalToggleBtn')) {
+        document.getElementById('modalToggleBtn').addEventListener('click', function() {
+            const id = this.dataset.userid;
+            if (!id) return;
+            toggleActive(id).then(() => {
+                deleteModal.hide();
+                fetchUsers();
+            }).catch(err => {
+                console.error(err);
+                alert('Error al alternar estado: ' + err.message);
+            });
         });
     }
 
@@ -69,7 +163,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('nombre').value = user.nombre || '';
                 document.getElementById('apellido').value = user.apellido || '';
                 document.getElementById('email').value = user.email || '';
-                document.getElementById('rolesInput').value = (user.roles || []).map(r => r.nombre || r).join(',');
+                
+                // Roles: seleccionar el rol del usuario
+                const rolesSelect = document.getElementById('rolesSelect');
+                if (rolesSelect && user.roles && user.roles.length > 0) {
+                    rolesSelect.value = user.roles[0].nombre || user.roles[0];
+                } else {
+                    rolesSelect.value = '';
+                }
+                
+                // Especialidad
+                const espSelect = document.getElementById('especialidadSelect');
+                if (espSelect) {
+                    espSelect.value = user.especialidad || '';
+                }
                 document.getElementById('isActiveCheck').checked = !!(user.active || user.isActive);
                 document.getElementById('password').value = '';
                 document.getElementById('userModalTitle').textContent = 'Editar usuario';
@@ -78,17 +185,14 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(err => { console.error(err); alert('Error al cargar usuario: ' + err.message); });
     }
 
+
+    // deleteUser se mantiene como fallback pero no se usa directamente ahora
     function deleteUser(id) {
-        if (!confirm('¿Eliminar usuario #' + id + '?')) return;
-        fetch(`/api/usuarios/${id}`, { method: 'DELETE' })
+        return fetch(`/api/usuarios/${id}`, { method: 'DELETE' })
             .then(r => {
-                if (r.ok) {
-                    fetchUsers();
-                } else {
-                    alert('Error al eliminar');
-                }
-            })
-            .catch(err => { console.error(err); alert('Error de red'); });
+                if (r.ok) return true;
+                throw new Error('Error al eliminar');
+            });
     }
 
     function toggleActive(id) {
@@ -113,9 +217,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             })
             .then(r => {
-                if (r.ok) fetchUsers(); else r.text().then(t => { alert('No se pudo actualizar: ' + t); });
+                if (r.ok) return fetchUsers();
+                return r.text().then(t => { throw new Error(t || 'No se pudo actualizar'); });
             })
-            .catch(err => { console.error(err); alert('Error al actualizar estado: ' + err.message); });
+            .catch(err => { console.error(err); throw err; });
     }
 
     saveUserBtn.addEventListener('click', () => {
@@ -125,7 +230,9 @@ document.addEventListener('DOMContentLoaded', function() {
             apellido: document.getElementById('apellido').value,
             email: document.getElementById('email').value,
             password: document.getElementById('password').value,
-            roles: document.getElementById('rolesInput').value.split(',').map(s => s.trim()).filter(Boolean),
+            // rol como array con un solo objeto { nombre: 'ROLE' }
+            roles: [{ nombre: document.getElementById('rolesSelect').value }],
+            especialidad: document.getElementById('especialidadSelect').value || null,
             isActive: document.getElementById('isActiveCheck').checked
         };
         if (id) {
@@ -133,8 +240,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
             }).then(r => { if (r.ok) { userModal.hide(); fetchUsers(); } else alert('Error al actualizar'); });
         } else {
-            // Crear nuevo usuario (endpoint de register)
-            fetch('/api/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+            // Crear nuevo usuario (endpoint de register) - enviar 'rol' como string (primer rol seleccionado)
+            const firstRole = (payload.roles && payload.roles.length > 0) ? payload.roles[0].nombre : '';
+            const registerPayload = {
+                nombre: payload.nombre,
+                apellido: payload.apellido,
+                email: payload.email,
+                password: payload.password,
+                especialidad: payload.especialidad,
+                rol: firstRole
+            };
+            fetch('/api/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(registerPayload) })
                 .then(r => r.json())
                 .then(res => {
                     if (res.success) { userModal.hide(); fetchUsers(); } else alert(res.message || 'Error al crear');
@@ -145,6 +261,11 @@ document.addEventListener('DOMContentLoaded', function() {
     newUserBtn.addEventListener('click', () => {
         document.getElementById('userForm').reset();
         document.getElementById('userId').value = '';
+        // limpiar selects
+        const rolesSelect = document.getElementById('rolesSelect');
+        if (rolesSelect) Array.from(rolesSelect.options).forEach(o => o.selected = false);
+        const espSelect = document.getElementById('especialidadSelect');
+        if (espSelect) espSelect.value = '';
         document.getElementById('userModalTitle').textContent = 'Nuevo usuario';
         userModal.show();
     });
@@ -159,5 +280,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Carga inicial
+    fetchRolesAndEspecialidades();
     fetchUsers();
 });

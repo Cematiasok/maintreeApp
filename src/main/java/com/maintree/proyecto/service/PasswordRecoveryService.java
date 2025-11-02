@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import java.net.URL;
 import java.util.Date;
 import java.util.UUID;
 
@@ -66,7 +67,26 @@ public class PasswordRecoveryService {
             helper.setTo(usuario.getEmail());
             helper.setSubject("Recuperación de Contraseña - MaintreeApp");
 
-            String baseUrl = requestUrl.substring(0, requestUrl.length() - "/forgot-password".length());
+            // Construir baseUrl de forma robusta a partir de la request URL recibida.
+            String baseUrl;
+            try {
+                URL url = new URL(requestUrl);
+                baseUrl = url.getProtocol() + "://" + url.getHost();
+                if (url.getPort() != -1) {
+                    baseUrl += ":" + url.getPort();
+                }
+            } catch (Exception e) {
+                // Fallback a la lógica anterior, pero manejando '/api/forgot-password' también
+                if (requestUrl.endsWith("/api/forgot-password")) {
+                    baseUrl = requestUrl.substring(0, requestUrl.length() - "/api/forgot-password".length());
+                } else if (requestUrl.endsWith("/forgot-password")) {
+                    baseUrl = requestUrl.substring(0, requestUrl.length() - "/forgot-password".length());
+                } else {
+                    // Ultimo recurso: usar requestUrl tal cual
+                    baseUrl = requestUrl;
+                }
+            }
+
             String resetLink = baseUrl + "/reset-password.html?token=" + usuario.getResetToken();
 
             String emailBody = "Hola, \n\n"
