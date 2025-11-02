@@ -29,12 +29,24 @@ public class UsuarioDAO {
      * Carga también los roles asociados a ese usuario.
      */
     public Usuario findByEmail(String email) {
-        String sql = "SELECT * FROM usuarios WHERE email = ?";
+        return findUserBy("email", email);
+    }
+
+    /**
+     * Busca un usuario por su token de reseteo.
+     * Carga también los roles asociados.
+     */
+    public Usuario findByResetToken(String token) {
+        return findUserBy("reset_token", token);
+    }
+
+    private Usuario findUserBy(String field, String value) {
+        String sql = "SELECT * FROM usuarios WHERE " + field + " = ?";
         Usuario usuario = null;
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, email);
+            pstmt.setString(1, value);
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
@@ -63,22 +75,19 @@ public class UsuarioDAO {
         return usuario;
     }
 
-    /**
-     * Busca un usuario por su token de reseteo.
-     * Carga también los roles asociados.
-     */
-    public Usuario findByResetToken(String token) {
-        String sql = "SELECT * FROM usuarios WHERE reset_token = ?";
+
+    public Usuario findById(int id) {
+        String sql = "SELECT * FROM usuarios WHERE id = ?";
         Usuario usuario = null;
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, token);
+            pstmt.setInt(1, id);
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     usuario = new Usuario();
-                    usuario.setId(rs.getInt("id")); // Cargar el ID
+                    usuario.setId(rs.getInt("id"));
                     usuario.setNombre(rs.getString("nombre"));
                     usuario.setApellido(rs.getString("apellido"));
                     usuario.setEmail(rs.getString("email"));
@@ -92,7 +101,6 @@ public class UsuarioDAO {
                         usuario.setResetTokenExpiry(new Date(timestamp.getTime()));
                     }
 
-                    // Cargamos sus roles usando la misma conexión
                     usuario.setRoles(findRolesByUsuarioId(usuario.getId(), conn));
                 }
             }
@@ -106,7 +114,7 @@ public class UsuarioDAO {
      * Actualiza la información básica del usuario (password, token).
      */
     public void update(Usuario usuario) {
-        String sql = "UPDATE usuarios SET password = ?, reset_token = ?, reset_token_expiry = ? WHERE id = ?";
+        String sql = "UPDATE usuarios SET password = ?, reset_token = ?, reset_token_expiry = ?, isActive = ? WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -120,7 +128,8 @@ public class UsuarioDAO {
                 pstmt.setNull(3, java.sql.Types.TIMESTAMP);
             }
 
-            pstmt.setInt(4, usuario.getId()); // Usamos el ID (int)
+            pstmt.setBoolean(4, usuario.isActive());
+            pstmt.setInt(5, usuario.getId()); // Usamos el ID (int)
 
             pstmt.executeUpdate();
 
@@ -163,6 +172,39 @@ public class UsuarioDAO {
         }
         // La excepción se propaga para que el servicio la maneje
         return generatedId;
+    }
+
+    public java.util.List<Usuario> findAll() {
+        String sql = "SELECT * FROM usuarios";
+        java.util.List<Usuario> usuarios = new java.util.ArrayList<>();
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                Usuario usuario = new Usuario();
+                usuario.setId(rs.getInt("id"));
+                usuario.setNombre(rs.getString("nombre"));
+                usuario.setApellido(rs.getString("apellido"));
+                usuario.setEmail(rs.getString("email"));
+                usuario.setEspecialidad(rs.getString("especialidad"));
+                usuario.setPassword(rs.getString("password"));
+                usuario.setActive(rs.getBoolean("isActive"));
+                usuario.setResetToken(rs.getString("reset_token"));
+
+                java.sql.Timestamp timestamp = rs.getTimestamp("reset_token_expiry");
+                if (timestamp != null) {
+                    usuario.setResetTokenExpiry(new Date(timestamp.getTime()));
+                }
+
+                usuario.setRoles(findRolesByUsuarioId(usuario.getId(), conn));
+                usuarios.add(usuario);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return usuarios;
     }
 
     // --- Métodos de Roles ---

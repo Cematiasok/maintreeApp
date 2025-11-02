@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const password = document.getElementById('password').value;
             const errorMessageDiv = document.getElementById('errorMessage');
 
-            fetch('/mywebapp/login', {
+            fetch('login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: email, password: password })
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Muestra un mensaje de "Procesando..."
             messageContainer.innerHTML = `<p class="info-message">Procesando su solicitud...</p>`;
 
-            fetch('/mywebapp/forgot-password', {
+            fetch('forgot-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: email })
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = Object.fromEntries(formData.entries());
     
             // 7. Se envían los datos al servidor usando la API Fetch.
-            fetch('/mywebapp/register', { // Esta será la URL de tu RegisterServlet
+            fetch('register', { // Esta será la URL de tu RegisterServlet
                 method: 'POST', // El método es POST porque estamos creando un nuevo recurso (un usuario).
                 headers: {
                     'Content-Type': 'application/json' // Se avisa al servidor que el cuerpo de la petición es un JSON.
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
          * (Esta función es igual que antes)
          */
         function fetchPendingUsers() {
-            fetch('/mywebapp/admin/usuarios-pendientes')
+            fetch('usuarios')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Error al cargar los usuarios: ' + response.statusText);
@@ -163,7 +163,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     return response.json();
                 })
                 .then(users => {
-                    populateTable(users);
+                    // Filter users that are not active
+                    const pendingUsers = users.filter(user => !user.active);
+                    populateTable(pendingUsers);
                 })
                 .catch(error => {
                     console.error(error);
@@ -171,9 +173,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
         }
 
-        /**
-         * NUEVA FUNCIÓN: Se activa cuando se envía el formulario
-         */
+        function populateTable(users) {
+            adminUserListBody.innerHTML = ''; // Limpiar "Cargando..."
+
+            if (users.length === 0) {
+                adminUserListBody.innerHTML = `<tr><td colspan="4" class="text-center">No hay usuarios pendientes de aprobación.</td></tr>`;
+                return;
+            }
+
+            users.forEach(user => {
+                const roles = user.roles.map(rol => rol.nombre).join(', ');
+                const rowHTML = `
+                    <tr id="user-row-${user.id}">
+                        <td>${user.nombre} ${user.apellido}</td>
+                        <td>${user.email}</td>
+                        <td>${roles}</td>
+                        <td>
+                            <input type="checkbox" 
+                                   name="userIds" 
+                                   value="${user.id}" 
+                                   class="confirm-check form-check-input">
+                        </td>
+                    </tr>
+                `;
+                adminUserListBody.innerHTML += rowHTML;
+            });
+        }
+
+        // --- PUNTO DE ENTRADA ---
+        
+        // 2. Escuchar el evento 'submit' del formulario
+        adminConfirmForm.addEventListener('submit', handleMassApproval);
+
+        // 1. Cargar los usuarios al iniciar la página
+        fetchPendingUsers();
+
         function handleMassApproval(event) {
             event.preventDefault(); // Evita que la página se recargue
 
@@ -191,8 +225,8 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Enviando IDs para aprobar:', idsToApprove);
 
             // 3. Enviar el ARRAY de IDs al servidor
-            // (Nota: la URL cambió a 'confirmar-roles-lote' para reflejar la acción)
-            fetch('/mywebapp/admin/confirmar-roles-lote', {
+            //fetch('/admin/confirmar-roles-lote', { cambiar fectch si falla
+            fetch('confirmar-roles-lote', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(idsToApprove) // Enviamos un array de IDs, ej: [1, 5, 12]
@@ -212,14 +246,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('Error de conexión al enviar la confirmación.');
             });
         }
-
-        // --- PUNTO DE ENTRADA ---
-        
-        // 2. Escuchar el evento 'submit' del formulario
-        adminConfirmForm.addEventListener('submit', handleMassApproval);
-
-        // 1. Cargar los usuarios al iniciar la página
-        fetchPendingUsers();
     }
     
     // ==================== RESET PASSWORD FORM ====================
@@ -266,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData.entries());
 
-            fetch('/mywebapp/reset-password', {
+            fetch('reset-password', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',

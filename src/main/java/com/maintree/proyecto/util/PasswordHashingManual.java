@@ -6,7 +6,7 @@ public class PasswordHashingManual {
 
     public static void main(String[] args) {
         // Escribe aquí la contraseña que quieres hashear
-        String passwordToHash = "1234"; // Cambia "12345" por la contraseña que necesites
+        String passwordToHash = ""; // TODO: Replace with a secure way to get the password
 
         // Generar el hash
         String hashedPassword = BCrypt.hashpw(passwordToHash, BCrypt.gensalt());

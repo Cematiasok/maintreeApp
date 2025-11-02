@@ -57,6 +57,15 @@ public class ResetPasswordServlet extends HttpServlet {
             return;
         }
 
+        // Password policy: at least 8 characters
+        if (newPassword.length() < 8) {
+            errorMsg = "La contraseña debe tener al menos 8 caracteres.";
+            String redirectUrl = String.format("reset-password.html?token=%s&error=%s",
+                    token, URLEncoder.encode(errorMsg, StandardCharsets.UTF_8.toString()));
+            resp.sendRedirect(redirectUrl);
+            return;
+        }
+
         // 2. Intentar finalizar el reseteo
         boolean success = recoveryService.finalizePasswordReset(token, newPassword);
 

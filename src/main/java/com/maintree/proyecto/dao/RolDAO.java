@@ -11,13 +11,33 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * RolDAO - Versión Corregida
- * - Consulta la tabla 'rol' (singular).
- * - CORREGIDO: Usa rs.getInt("id") en lugar de rs.getLong("id")
- * para coincidir con los setters que esperan un 'int'.
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class RolDAO {
+
+    public List<Rol> findAll() {
+        String sql = "SELECT * FROM rol";
+        List<Rol> roles = new ArrayList<>();
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                Rol rol = new Rol();
+                rol.setId(rs.getInt("id"));
+                rol.setNombre(rs.getString("nombre"));
+                rol.setDescripcion(rs.getString("descripcion"));
+                rol.setPermisos(findPermissionsByRolId(rol.getId(), conn));
+                roles.add(rol);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return roles;
+    }
+
 
     /**
      * Busca un Rol por su nombre.

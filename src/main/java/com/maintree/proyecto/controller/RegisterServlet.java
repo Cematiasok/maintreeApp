@@ -53,6 +53,14 @@ public class RegisterServlet extends HttpServlet {
             JsonObject jsonObject = gson.fromJson(body, JsonObject.class);
 
             // Extraer el nombre del rol como un String. Si no viene, lanza una excepción.
+            if (jsonObject.get("rol") == null || jsonObject.get("rol").getAsString().isEmpty()) {
+                responseMap.put("success", false);
+                responseMap.put("message", "El campo 'rol' es obligatorio.");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                out.print(gson.toJson(responseMap));
+                out.flush();
+                return;
+            }
             String rolNombre = jsonObject.get("rol").getAsString();
 
             // Convertir el resto del JSON a un objeto Usuario
