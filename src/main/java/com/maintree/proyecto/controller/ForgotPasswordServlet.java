@@ -54,7 +54,7 @@ public class ForgotPasswordServlet extends HttpServlet {
         } catch (Exception e) {
             // Si algo falla (ej. el servidor de correo), devolvemos un error.
             e.printStackTrace();
-            jsonResponse = "{\"success\": false, \"message\": \"Hubo un error al procesar tu solicitud. Inténtalo de nuevo más tarde.\"}";
+            jsonResponse = "{\"success\": false, \"message\": \"Hubo un error al procesar tu solicitud: " + e.getMessage() + "\"}";
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
         

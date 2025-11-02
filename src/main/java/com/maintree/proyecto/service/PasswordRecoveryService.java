@@ -87,7 +87,7 @@ public class PasswordRecoveryService {
         // Para desarrollo local con MailHog, la autenticación se establece en 'false'.
         // Para un servidor SMTP real (producción), cambia esto a 'true' y proporciona un 'username' y 'password'.
         props.put("mail.smtp.auth", "false");
-        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.starttls.enable", "false");
         props.put("mail.smtp.host", host);
         props.put("mail.smtp.port", port);
 

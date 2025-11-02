@@ -221,4 +221,72 @@ document.addEventListener('DOMContentLoaded', function() {
         // 1. Cargar los usuarios al iniciar la página
         fetchPendingUsers();
     }
+    
+    // ==================== RESET PASSWORD FORM ====================
+    const resetForm = document.getElementById('reset-form');
+    if (resetForm) {
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get('token');
+        const error = params.get('error');
+
+        if (token) {
+            document.getElementById('token-input').value = token;
+        } else {
+            // Si no hay token, no se puede proceder
+            const formLogin = document.querySelector('.form-login');
+            if(formLogin){
+                formLogin.innerHTML = '<h2>Enlace inválido</h2><p>El enlace para restablecer la contraseña no es válido o ha expirado. Por favor, solicita uno nuevo.</p>';
+            }
+        }
+
+        if (error) {
+            const errorMessage = document.getElementById('error-message');
+            if(errorMessage){
+                errorMessage.textContent = decodeURIComponent(error.replace(/\+/g, ' '));
+            }
+        }
+
+        resetForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+            const errorMsg = document.getElementById('error-message');
+
+            if (newPass !== confirmPass) {
+                errorMsg.textContent = 'Las contraseñas no coinciden';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            // Clear previous errors
+            errorMsg.textContent = '';
+            errorMsg.style.display = 'none';
+
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            fetch('/mywebapp/reset-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(data)
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    // If the server doesn't redirect, handle it here
+                    // For now, we just reload to see any server-rendered error page
+                    window.location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                errorMsg.textContent = 'Hubo un error al conectar con el servidor.';
+                errorMsg.style.display = 'block';
+            });
+        });
+    }
 });
