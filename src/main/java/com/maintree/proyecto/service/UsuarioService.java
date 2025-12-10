@@ -22,7 +22,10 @@ public class UsuarioService {
     }
 
     public Usuario save(Usuario u) {
-        return usuarioRepository.save(u);
+        if (u != null) {
+            return usuarioRepository.save(u);
+        }
+        return null;
     }
 
     public void deleteById(int id) {

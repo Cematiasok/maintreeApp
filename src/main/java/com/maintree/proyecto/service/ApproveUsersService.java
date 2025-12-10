@@ -17,11 +17,16 @@ public class ApproveUsersService {
     private com.maintree.proyecto.dao.RolRepository rolRepository;
 
     public void approveUsers(List<Integer> userIds) {
+        if (userIds == null) {
+            return;
+        }
         for (Integer userId : userIds) {
-            Usuario usuario = usuarioRepository.findById(userId).orElse(null);
-            if (usuario != null) {
-                usuario.setActive(true);
-                usuarioRepository.save(usuario);
+            if (userId != null) {
+                Usuario usuario = usuarioRepository.findById(userId).orElse(null);
+                if (usuario != null) {
+                    usuario.setActive(true);
+                    usuarioRepository.save(usuario);
+                }
             }
         }
     }
@@ -39,13 +44,18 @@ public class ApproveUsersService {
 
     // Aprobar un usuario y asignarle un rol por nombre
     public boolean approveUserWithRole(int userId, String rolNombre) {
+        if (rolNombre == null || rolNombre.isEmpty()) {
+            return false;
+        }
         Usuario usuario = usuarioRepository.findById(userId).orElse(null);
         if (usuario == null) return false;
         com.maintree.proyecto.model.Rol rol = rolRepository.findByNombre(rolNombre);
         if (rol == null) return false;
         java.util.Set<com.maintree.proyecto.model.Rol> roles = usuario.getRoles();
-        roles.add(rol);
-        usuario.setRoles(roles);
+        if (roles != null) {
+            roles.add(rol);
+            usuario.setRoles(roles);
+        }
         usuario.setActive(true);
         usuarioRepository.save(usuario);
         return true;

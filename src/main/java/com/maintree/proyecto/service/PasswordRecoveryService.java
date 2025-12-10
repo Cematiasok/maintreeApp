@@ -59,18 +59,19 @@ public class PasswordRecoveryService {
         return true;
     }
 
+    @SuppressWarnings("null")
     private void sendRecoveryEmail(Usuario usuario, String requestUrl) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-            helper.setTo(usuario.getEmail());
+            helper.setTo(usuario.getEmail() != null ? usuario.getEmail() : "");
             helper.setSubject("Recuperación de Contraseña - MaintreeApp");
 
             // Construir baseUrl de forma robusta a partir de la request URL recibida.
             String baseUrl;
             try {
-                URL url = new URL(requestUrl);
+                URL url = new java.net.URI(requestUrl).toURL();
                 baseUrl = url.getProtocol() + "://" + url.getHost();
                 if (url.getPort() != -1) {
                     baseUrl += ":" + url.getPort();

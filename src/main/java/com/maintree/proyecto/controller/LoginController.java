@@ -3,7 +3,6 @@ package com.maintree.proyecto.controller;
 import com.maintree.proyecto.model.Usuario;
 import com.maintree.proyecto.service.LoginService;
 import com.maintree.proyecto.dao.UsuarioRepository;
-import com.maintree.proyecto.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;  // Incluye CrossOrigin
